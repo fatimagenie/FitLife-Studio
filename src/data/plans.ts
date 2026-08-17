@@ -1,0 +1,65 @@
+import { Plan } from "@/types";
+
+export const plans: Plan[] = [
+  {
+    name: "Basic",
+    price: "999",
+    period: "/month",
+    description: "Perfect for beginners starting their fitness journey",
+    features: [
+      "Access to gym equipment",
+      "Locker room access",
+      "2 group classes/week",
+      "Basic fitness assessment",
+      "Fitness app access",
+    ],
+    popular: false,
+  },
+  {
+    name: "Standard",
+    price: "1,999",
+    period: "/month",
+    description: "Most popular for serious fitness enthusiasts",
+    features: [
+      "Everything in Basic",
+      "Unlimited group classes",
+      "1 PT session/week",
+      "Nutrition guidance",
+      "Sauna access",
+      "Workshop access",
+    ],
+    popular: true,
+  },
+  {
+    name: "Premium",
+    price: "3,999",
+    period: "/month",
+    description: "Ultimate experience for transformation results",
+    features: [
+      "Everything in Standard",
+      "3 PT sessions/week",
+      "Custom diet plan",
+      "Recovery sessions",
+      "Priority booking",
+      "VIP lounge access",
+      "Monthly body analysis",
+    ],
+    popular: false,
+  },
+  {
+    name: "Annual",
+    price: "19,999",
+    period: "/year",
+    description: "Best value - save 2 months free!",
+    features: [
+      "Everything in Premium",
+      "All Premium benefits",
+      "2 months FREE",
+      "Guest passes (2/month)",
+      "Exclusive merch",
+      "Personal locker",
+      "Priority support",
+    ],
+    popular: false,
+  },
+];

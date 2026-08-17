@@ -12,6 +12,13 @@ export const metadata: Metadata = {
   title: "FitLife Studio | Transform Your Body, Elevate Your Mind",
   description:
     "Join FitLife Studio - the premier fitness center with expert trainers, modern equipment, and personalized training programs. Start your fitness journey today!",
+  keywords: "gym, fitness, personal training, yoga, crossfit, gurugram, haryana",
+  openGraph: {
+    title: "FitLife Studio | Transform Your Body, Elevate Your Mind",
+    description: "Join FitLife Studio - the premier fitness center with expert trainers, modern equipment, and personalized training programs.",
+    siteName: "FitLife Studio",
+    type: "website",
+  },
 };
 
 export default function RootLayout({

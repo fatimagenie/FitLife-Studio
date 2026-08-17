@@ -1,26 +1,12 @@
+import Link from "next/link";
 import { Dumbbell, Users, Heart, Clock } from "lucide-react";
+import ScrollAnimation from "./ScrollAnimation";
 
 const features = [
-  {
-    icon: Dumbbell,
-    title: "Modern Equipment",
-    description: "State-of-the-art machines and free weights for every workout style.",
-  },
-  {
-    icon: Users,
-    title: "Expert Trainers",
-    description: "Certified professionals to guide you every step of the way.",
-  },
-  {
-    icon: Heart,
-    title: "Wellness Programs",
-    description: "Holistic health programs including yoga, meditation, and nutrition.",
-  },
-  {
-    icon: Clock,
-    title: "Flexible Hours",
-    description: "Open 24/7 to fit your schedule, early bird or night owl.",
-  },
+  { icon: Dumbbell, title: "Modern Equipment", description: "State-of-the-art machines and free weights for every workout style." },
+  { icon: Users, title: "Expert Trainers", description: "Certified professionals to guide you every step of the way." },
+  { icon: Heart, title: "Wellness Programs", description: "Holistic health programs including yoga, meditation, and nutrition." },
+  { icon: Clock, title: "Flexible Hours", description: "Open 24/7 to fit your schedule, early bird or night owl." },
 ];
 
 export default function About() {
@@ -28,14 +14,10 @@ export default function About() {
     <section id="about" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Left Content */}
-          <div>
-            <span className="text-teal-600 font-semibold text-sm uppercase tracking-wider">
-              About Us
-            </span>
+          <ScrollAnimation>
+            <span className="text-teal-600 font-semibold text-sm uppercase tracking-wider">About Us</span>
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mt-3 mb-6">
-              Your Fitness Journey{" "}
-              <span className="text-teal-600">Starts Here</span>
+              Your Fitness Journey <span className="text-teal-600">Starts Here</span>
             </h2>
             <p className="text-gray-600 text-lg mb-6 leading-relaxed">
               At FitLife Studio, we believe fitness is not just about working out —
@@ -49,45 +31,43 @@ export default function About() {
               customized programs tailored to your unique needs.
             </p>
 
-            {/* Features Grid */}
-            <div className="grid sm:grid-cols-2 gap-6">
+            <div className="grid sm:grid-cols-2 gap-6 mb-8">
               {features.map((feature) => (
                 <div key={feature.title} className="flex items-start gap-4">
                   <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center flex-shrink-0">
                     <feature.icon className="h-6 w-6 text-teal-600" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-1">
-                      {feature.title}
-                    </h4>
+                    <h4 className="font-semibold text-gray-900 mb-1">{feature.title}</h4>
                     <p className="text-sm text-gray-600">{feature.description}</p>
                   </div>
                 </div>
               ))}
             </div>
-          </div>
 
-          {/* Right - Image Collage */}
-          <div className="relative">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-4">
-                <div className="bg-gradient-to-br from-teal-400 to-teal-600 rounded-2xl h-48 sm:h-64 flex items-center justify-center text-white">
-                  <Dumbbell className="h-16 w-16 opacity-50" />
+            <Link href="/about" className="inline-flex items-center gap-2 text-teal-600 font-semibold hover:text-teal-700 transition-colors">
+              Read More About Us →
+            </Link>
+          </ScrollAnimation>
+
+          <ScrollAnimation delay={200}>
+            <div className="relative">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-4">
+                  <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&q=80" alt="Gym Floor" className="rounded-2xl h-48 sm:h-64 w-full object-cover shadow-lg" />
+                  <div className="bg-gradient-to-br from-gray-700 to-gray-900 rounded-2xl h-32 sm:h-40 flex items-center justify-center text-white shadow-lg">
+                    <span className="text-4xl font-bold">10K+</span>
+                  </div>
                 </div>
-                <div className="bg-gradient-to-br from-gray-700 to-gray-900 rounded-2xl h-32 sm:h-40 flex items-center justify-center text-white">
-                  <span className="text-4xl font-bold">10K+</span>
-                </div>
-              </div>
-              <div className="space-y-4 mt-8">
-                <div className="bg-gradient-to-br from-gray-700 to-gray-900 rounded-2xl h-32 sm:h-40 flex items-center justify-center text-white">
-                  <span className="text-4xl font-bold">98%</span>
-                </div>
-                <div className="bg-gradient-to-br from-teal-500 to-teal-700 rounded-2xl h-48 sm:h-64 flex items-center justify-center text-white">
-                  <Heart className="h-16 w-16 opacity-50" />
+                <div className="space-y-4 mt-8">
+                  <div className="bg-gradient-to-br from-gray-700 to-gray-900 rounded-2xl h-32 sm:h-40 flex items-center justify-center text-white shadow-lg">
+                    <span className="text-4xl font-bold">98%</span>
+                  </div>
+                  <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80" alt="Training" className="rounded-2xl h-48 sm:h-64 w-full object-cover shadow-lg" />
                 </div>
               </div>
             </div>
-          </div>
+          </ScrollAnimation>
         </div>
       </div>
     </section>
