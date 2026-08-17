@@ -58,7 +58,7 @@ export default function Contact() {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
-                      <input type="tel" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition-all" placeholder="+91 98765 43210" />
+                      <input type="tel" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition-all" placeholder="+92 316 9689595" />
                     </div>
                   </div>
                   <div>
@@ -82,21 +82,21 @@ export default function Contact() {
                     <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center flex-shrink-0"><MapPin className="h-6 w-6 text-teal-600" /></div>
                     <div>
                       <h4 className="font-semibold text-gray-900 mb-1">Our Location</h4>
-                      <p className="text-gray-600 text-sm">123 Fitness Avenue, Sector 15<br />Gurugram, Haryana 122001</p>
+                      <p className="text-gray-600 text-sm">2H5W+P4V, Ishrat Cinema Rd, opposite khttak general store<br />Gulbahar, Peshawar, 25000, Pakistan</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center flex-shrink-0"><Phone className="h-6 w-6 text-teal-600" /></div>
                     <div>
                       <h4 className="font-semibold text-gray-900 mb-1">Phone</h4>
-                      <p className="text-gray-600 text-sm">+91 98765 43210<br />+91 11 2345 6789</p>
+                      <p className="text-gray-600 text-sm">+92 316 9689595</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center flex-shrink-0"><Mail className="h-6 w-6 text-teal-600" /></div>
                     <div>
                       <h4 className="font-semibold text-gray-900 mb-1">Email</h4>
-                      <p className="text-gray-600 text-sm">info@fitlifestudio.com<br />support@fitlifestudio.com</p>
+                      <p className="text-gray-600 text-sm">info@goldstandardgym.com</p>
                     </div>
                   </div>
                 </div>
@@ -105,12 +105,8 @@ export default function Contact() {
               <div className="bg-gradient-to-br from-teal-600 to-teal-800 rounded-2xl p-8 text-white">
                 <h3 className="text-xl font-bold mb-6">Operating Hours</h3>
                 <div className="space-y-3">
-                  <div className="flex justify-between"><span className="text-teal-100">Monday - Friday</span><span className="font-semibold">5:00 AM - 11:00 PM</span></div>
-                  <div className="flex justify-between"><span className="text-teal-100">Saturday</span><span className="font-semibold">6:00 AM - 10:00 PM</span></div>
-                  <div className="flex justify-between"><span className="text-teal-100">Sunday</span><span className="font-semibold">7:00 AM - 9:00 PM</span></div>
-                </div>
-                <div className="mt-6 pt-6 border-t border-white/20">
-                  <p className="text-teal-100 text-sm">24/7 access available for Premium members</p>
+                  <div className="flex justify-between"><span className="text-teal-100">Monday - Saturday</span><span className="font-semibold">6:00 AM - 11:00 PM</span></div>
+                  <div className="flex justify-between"><span className="text-teal-100">Sunday</span><span className="font-semibold text-red-300">Closed</span></div>
                 </div>
               </div>
             </div>

@@ -11,10 +11,10 @@ const features = [
 ];
 
 const timeline = [
-  { year: "2020", title: "Founded", description: "FitLife Studio was born from a passion for fitness and community." },
-  { year: "2021", title: "Expanded Facility", description: "Doubled our space to 15,000 sq ft with new equipment and studios." },
+  { year: "2020", title: "Founded", description: "GOLD STANDARD GYM was born from a passion for fitness and community in Peshawar." },
+  { year: "2021", title: "Expanded Facility", description: "Doubled our space with new equipment and dedicated training studios." },
   { year: "2023", title: "500+ Members", description: "Reached the milestone of 500 active members in our community." },
-  { year: "2024", title: "Award Winning", description: "Won 'Best Fitness Studio in Gurugram' at the Health & Wellness Awards." },
+  { year: "2024", title: "Award Winning", description: "Recognized as one of the top gyms in Peshawar for quality training." },
   { year: "2025", title: "New Programs", description: "Launched CrossFit, Pilates Reformer, and Boxing programs." },
   { year: "2026", title: "Going Digital", description: "Online classes, fitness app, and virtual training now available." },
 ];
@@ -31,7 +31,7 @@ export default function AboutPage() {
     <div className="min-h-screen">
       <Navbar />
       <PageHero
-        title="About FitLife Studio"
+        title="About GOLD STANDARD GYM"
         subtitle="Learn about our journey, our mission, and the team behind your fitness transformation."
         breadcrumbs={[{ label: "About", href: "/about" }]}
       />
@@ -41,15 +41,15 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <ScrollAnimation>
-              <span className="text-teal-600 font-semibold text-sm uppercase tracking-wider">Our Story</span>
+                <span className="text-teal-600 font-semibold text-sm uppercase tracking-wider">Our Story</span>
               <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mt-3 mb-6">
                 Your Fitness Journey <span className="text-teal-600">Starts Here</span>
               </h2>
               <p className="text-gray-600 text-lg mb-6 leading-relaxed">
-                At FitLife Studio, we believe fitness is not just about working out — it&apos;s about transforming your entire lifestyle. Our state-of-the-art facility combines cutting-edge equipment with personalized training approaches.
+                At GOLD STANDARD GYM, we believe fitness is not just about working out — it&apos;s about transforming your entire lifestyle. Our state-of-the-art facility combines cutting-edge equipment with personalized training approaches.
               </p>
               <p className="text-gray-600 mb-8 leading-relaxed">
-                Founded in 2020, we&apos;ve helped hundreds of members achieve their fitness goals, from weight loss to muscle gain, from stress relief to athletic performance. Our team of certified trainers creates customized programs tailored to your unique needs.
+                Located in the heart of Gulbahar, Peshawar, we&apos;ve helped hundreds of members achieve their fitness goals, from weight loss to muscle gain, from stress relief to athletic performance. Our team of certified trainers creates customized programs tailored to your unique needs.
               </p>
               <div className="grid sm:grid-cols-2 gap-6">
                 {features.map((f) => (
@@ -153,7 +153,7 @@ export default function AboutPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <ScrollAnimation>
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">Ready to Start Your Journey?</h2>
-            <p className="text-teal-100 text-lg mb-8">Join FitLife Studio today and become part of our growing fitness family.</p>
+            <p className="text-teal-100 text-lg mb-8">Join GOLD STANDARD GYM today and become part of our growing fitness family.</p>
             <a href="/plans" className="inline-block bg-white text-teal-700 px-8 py-4 rounded-full font-bold text-lg hover:bg-teal-50 transition-all shadow-xl">
               View Membership Plans
             </a>

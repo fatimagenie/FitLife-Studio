@@ -9,7 +9,7 @@ export default function GalleryPage() {
       <Navbar />
       <PageHero
         title="Photo Gallery"
-        subtitle="Take a look inside FitLife Studio - our equipment, classes, events, and member transformations."
+        subtitle="Take a look inside GOLD STANDARD GYM - our equipment, classes, events, and member transformations."
         breadcrumbs={[{ label: "Gallery", href: "/gallery" }]}
       />
 

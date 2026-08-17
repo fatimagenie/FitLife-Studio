@@ -35,25 +35,25 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center gap-2 mb-4">
               <Dumbbell className="h-8 w-8 text-teal-400" />
-              <span className="text-xl font-bold">FitLife <span className="text-teal-400">Studio</span></span>
+              <span className="text-xl font-bold">GOLD <span className="text-teal-400">STANDARD</span></span>
             </Link>
             <p className="text-gray-400 text-sm mb-6 leading-relaxed max-w-sm">
-              Transform your body, elevate your mind. Join the fitness revolution
-              at FitLife Studio.
+              Build your strength, transform your body. Join the fitness revolution
+              at GOLD STANDARD GYM, Gulbahar, Peshawar.
             </p>
 
             <div className="space-y-3 mb-6">
               <div className="flex items-center gap-3 text-gray-400 text-sm">
                 <MapPin className="h-4 w-4 text-teal-400" />
-                123 Fitness Avenue, Sector 15, Gurugram
+                2H5W+P4V, Ishrat Cinema Rd, Gulbahar, Peshawar
               </div>
               <div className="flex items-center gap-3 text-gray-400 text-sm">
                 <Phone className="h-4 w-4 text-teal-400" />
-                +91 98765 43210
+                +92 316 9689595
               </div>
               <div className="flex items-center gap-3 text-gray-400 text-sm">
                 <Mail className="h-4 w-4 text-teal-400" />
-                info@fitlifestudio.com
+                info@goldstandardgym.com
               </div>
             </div>
 
@@ -83,8 +83,8 @@ export default function Footer() {
 
         <div className="mt-12 pt-8 border-t border-gray-800">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-gray-400 text-sm">&copy; 2026 FitLife Studio. All rights reserved.</p>
-            <p className="text-gray-500 text-xs">Made with passion for fitness in India</p>
+            <p className="text-gray-400 text-sm">&copy; 2026 GOLD STANDARD GYM. All rights reserved.</p>
+            <p className="text-gray-500 text-xs">Made with passion for fitness in Peshawar</p>
           </div>
         </div>
       </div>

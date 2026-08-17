@@ -48,7 +48,7 @@ export default function Home() {
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <ScrollAnimation>
               <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">Ready to Transform Your Life?</h2>
-              <p className="text-teal-100 text-lg mb-8">Start your fitness journey today with a free 3-day trial. No commitment required.</p>
+              <p className="text-teal-100 text-lg mb-8">Start your fitness journey today with a free trial. No commitment required.</p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link href="/plans" className="bg-white text-teal-700 px-8 py-4 rounded-full font-bold text-lg hover:bg-teal-50 transition-all shadow-xl">
                   Start Free Trial

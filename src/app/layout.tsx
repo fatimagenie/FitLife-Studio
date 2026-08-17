@@ -9,14 +9,14 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "FitLife Studio | Transform Your Body, Elevate Your Mind",
+  title: "GOLD STANDARD GYM | Gulbahar, Peshawar",
   description:
-    "Join FitLife Studio - the premier fitness center with expert trainers, modern equipment, and personalized training programs. Start your fitness journey today!",
-  keywords: "gym, fitness, personal training, yoga, crossfit, gurugram, haryana",
+    "GOLD STANDARD GYM - the premier fitness center in Gulbahar, Peshawar with expert trainers, modern equipment, and personalized training programs. Open Mon-Sat 6AM-11PM!",
+  keywords: "gym, fitness, personal training, yoga, crossfit, peshawar, gulbahar, pakistan",
   openGraph: {
-    title: "FitLife Studio | Transform Your Body, Elevate Your Mind",
-    description: "Join FitLife Studio - the premier fitness center with expert trainers, modern equipment, and personalized training programs.",
-    siteName: "FitLife Studio",
+    title: "GOLD STANDARD GYM | Gulbahar, Peshawar",
+    description: "GOLD STANDARD GYM - the premier fitness center in Gulbahar, Peshawar with expert trainers, modern equipment, and personalized training programs.",
+    siteName: "GOLD STANDARD GYM",
     type: "website",
   },
 };

@@ -20,7 +20,7 @@ export default function TrainersPage() {
       <Navbar />
       <PageHero
         title="Our Trainers"
-        subtitle="Meet our certified professionals dedicated to helping you reach your fitness goals."
+        subtitle="Meet our certified professionals dedicated to helping you reach your fitness goals at GOLD STANDARD GYM."
         breadcrumbs={[{ label: "Trainers", href: "/trainers" }]}
       />
 

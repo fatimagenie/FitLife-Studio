@@ -10,7 +10,7 @@ export default function PlansPage() {
       <Navbar />
       <PageHero
         title="Membership Plans"
-        subtitle="Choose the plan that fits your fitness goals. All plans include access to our world-class facility."
+        subtitle="Choose the plan that fits your fitness goals. All plans include access to our world-class facility at GOLD STANDARD GYM."
         breadcrumbs={[{ label: "Plans", href: "/plans" }]}
       />
 

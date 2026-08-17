@@ -35,7 +35,7 @@ export default function Navbar() {
           <Link href="/" className="flex items-center gap-2">
             <Dumbbell className="h-8 w-8 text-teal-600" />
             <span className="text-xl font-bold text-gray-900">
-              FitLife <span className="text-teal-600">Studio</span>
+              GOLD <span className="text-teal-600">STANDARD</span>
             </span>
           </Link>
 

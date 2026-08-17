@@ -102,7 +102,7 @@ export default function BookingModal({ isOpen, onClose, className = "", trainer,
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none"
-                    placeholder="+91 98765 43210"
+                    placeholder="+92 316 9689595"
                   />
                 </div>
               </div>

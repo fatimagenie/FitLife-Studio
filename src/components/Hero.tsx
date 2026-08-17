@@ -34,21 +34,21 @@ export default function Hero() {
         <div className="text-center">
           <ScrollAnimation>
             <span className="inline-block px-4 py-2 bg-white/20 text-white rounded-full text-sm font-medium mb-6 backdrop-blur-sm">
-              #1 Fitness Studio in Town
+              #1 Gym in Gulbahar, Peshawar
             </span>
           </ScrollAnimation>
 
           <ScrollAnimation delay={100}>
             <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-              Transform Your Body,
+              Build Your Strength,
               <br />
-              <span className="text-teal-200">Elevate Your Mind</span>
+              <span className="text-teal-200">Transform Your Body</span>
             </h1>
           </ScrollAnimation>
 
           <ScrollAnimation delay={200}>
             <p className="text-lg sm:text-xl text-teal-100 max-w-2xl mx-auto mb-10">
-              Join FitLife Studio and discover a new you. Expert trainers,
+              Join GOLD STANDARD GYM and discover a new you. Expert trainers,
               state-of-the-art equipment, and a community that supports your
               fitness journey.
             </p>
@@ -71,7 +71,7 @@ export default function Hero() {
                 <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
                   <Play className="h-5 w-5 fill-current" />
                 </div>
-                Watch Preview
+                Visit Our Gym
               </Link>
             </div>
           </ScrollAnimation>

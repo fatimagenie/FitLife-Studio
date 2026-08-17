@@ -9,7 +9,7 @@ export default function SchedulePage() {
       <Navbar />
       <PageHero
         title="Class Schedule"
-        subtitle="Browse our weekly timetable and book your favorite classes. Limited spots available!"
+        subtitle="Browse our weekly timetable and book your favorite classes at GOLD STANDARD GYM. Limited spots available!"
         breadcrumbs={[{ label: "Schedule", href: "/schedule" }]}
       />
 

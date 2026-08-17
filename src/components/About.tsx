@@ -20,12 +20,12 @@ export default function About() {
               Your Fitness Journey <span className="text-teal-600">Starts Here</span>
             </h2>
             <p className="text-gray-600 text-lg mb-6 leading-relaxed">
-              At FitLife Studio, we believe fitness is not just about working out —
+              At GOLD STANDARD GYM, we believe fitness is not just about working out —
               it&apos;s about transforming your entire lifestyle. Our facility combines
               cutting-edge equipment with personalized training approaches.
             </p>
             <p className="text-gray-600 mb-8 leading-relaxed">
-              Founded in 2020, we&apos;ve helped hundreds of members achieve their
+              Located in the heart of Gulbahar, Peshawar, we&apos;ve helped hundreds of members achieve their
               fitness goals, from weight loss to muscle gain, from stress relief
               to athletic performance. Our team of certified trainers creates
               customized programs tailored to your unique needs.

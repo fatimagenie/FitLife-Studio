@@ -25,7 +25,7 @@ export default function ContactPage() {
       <Navbar />
       <PageHero
         title="Contact Us"
-        subtitle="Have questions? Ready to join? Reach out to us and we'll help you get started."
+        subtitle="Have questions about GOLD STANDARD GYM? Ready to join? Reach out to us and we'll help you get started."
         breadcrumbs={[{ label: "Contact", href: "/contact" }]}
       />
 
@@ -59,7 +59,7 @@ export default function ContactPage() {
                     <div className="grid sm:grid-cols-2 gap-5">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
-                        <input type="tel" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none" placeholder="+91 98765 43210" />
+                        <input type="tel" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none" placeholder="+92 316 9689595" />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Subject</label>
@@ -95,21 +95,21 @@ export default function ContactPage() {
                       <div className="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center flex-shrink-0"><MapPin className="h-5 w-5 text-teal-600" /></div>
                       <div>
                         <h4 className="font-semibold text-gray-900 text-sm">Location</h4>
-                        <p className="text-gray-600 text-sm">123 Fitness Avenue, Sector 15, Gurugram, Haryana 122001</p>
+                        <p className="text-gray-600 text-sm">2H5W+P4V, Ishrat Cinema Rd, opposite khttak general store, Gulbahar, Peshawar, 25000, Pakistan</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
                       <div className="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center flex-shrink-0"><Phone className="h-5 w-5 text-teal-600" /></div>
                       <div>
                         <h4 className="font-semibold text-gray-900 text-sm">Phone</h4>
-                        <p className="text-gray-600 text-sm">+91 98765 43210<br />+91 11 2345 6789</p>
+                        <p className="text-gray-600 text-sm">+92 316 9689595</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
                       <div className="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center flex-shrink-0"><Mail className="h-5 w-5 text-teal-600" /></div>
                       <div>
                         <h4 className="font-semibold text-gray-900 text-sm">Email</h4>
-                        <p className="text-gray-600 text-sm">info@fitlifestudio.com</p>
+                        <p className="text-gray-600 text-sm">info@goldstandardgym.com</p>
                       </div>
                     </div>
                   </div>
@@ -121,11 +121,9 @@ export default function ContactPage() {
                     <h3 className="font-bold">Operating Hours</h3>
                   </div>
                   <div className="space-y-2 text-sm">
-                    <div className="flex justify-between"><span className="text-teal-100">Mon - Fri</span><span className="font-semibold">5:00 AM - 11:00 PM</span></div>
-                    <div className="flex justify-between"><span className="text-teal-100">Saturday</span><span className="font-semibold">6:00 AM - 10:00 PM</span></div>
-                    <div className="flex justify-between"><span className="text-teal-100">Sunday</span><span className="font-semibold">7:00 AM - 9:00 PM</span></div>
+                    <div className="flex justify-between"><span className="text-teal-100">Mon - Sat</span><span className="font-semibold">6:00 AM - 11:00 PM</span></div>
+                    <div className="flex justify-between"><span className="text-teal-100">Sunday</span><span className="font-semibold text-red-300">Closed</span></div>
                   </div>
-                  <div className="mt-4 pt-4 border-t border-white/20 text-teal-100 text-xs">24/7 access for Premium members</div>
                 </div>
 
                 <BmiCalculator />

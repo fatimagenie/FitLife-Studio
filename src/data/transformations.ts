@@ -5,7 +5,7 @@ export const transformations: Transformation[] = [
     name: "Arjun Patel",
     duration: "8 months",
     weightLost: "22 kg",
-    quote: "From 95kg to 73kg. FitLife changed my life completely. The trainers and community kept me going when I wanted to quit.",
+    quote: "From 95kg to 73kg. GOLD STANDARD GYM changed my life completely. The trainers and community kept me going when I wanted to quit.",
     color: "from-teal-500 to-teal-700",
   },
   {
