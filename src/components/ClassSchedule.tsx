@@ -1,18 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Clock, Users, Filter } from "lucide-react";
-import { classes, days } from "@/data/classes";
+import { classes as defaultClasses, days } from "@/data/classes";
+import { getClasses } from "@/lib/storage";
+import { ClassSchedule as ClassScheduleType } from "@/types";
 import BookingModal from "./BookingModal";
 
 export default function ClassSchedule() {
+  const [classList, setClassList] = useState<ClassScheduleType[]>(defaultClasses);
+
+  useEffect(() => { setClassList(getClasses(defaultClasses)); }, []);
+
   const [selectedDay, setSelectedDay] = useState("Monday");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [bookingModal, setBookingModal] = useState<{ open: boolean; className?: string; trainer?: string; time?: string; day?: string }>({ open: false });
 
-  const categories = ["all", ...new Set(classes.map((c) => c.category))];
+  const categories = ["all", ...new Set(classList.map((c) => c.category))];
 
-  const filtered = classes.filter(
+  const filtered = classList.filter(
     (c) => c.day === selectedDay && (selectedCategory === "all" || c.category === selectedCategory)
   );
 

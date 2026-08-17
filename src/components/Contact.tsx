@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
+import { saveMessage } from "@/lib/storage";
 import ScrollAnimation from "./ScrollAnimation";
 
 export default function Contact() {
@@ -10,6 +11,7 @@ export default function Contact() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    saveMessage({ name: formData.name, email: formData.email, phone: formData.phone, subject: "", message: formData.message });
     setSubmitted(true);
     setTimeout(() => {
       setSubmitted(false);

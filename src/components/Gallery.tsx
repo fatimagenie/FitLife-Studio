@@ -1,16 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
-import { galleryImages, galleryCategories } from "@/data/gallery";
+import { galleryImages as defaultGallery, galleryCategories } from "@/data/gallery";
+import { getGallery } from "@/lib/storage";
+import { GalleryItem } from "@/types";
 
 export default function Gallery() {
+  const [galleryList, setGalleryList] = useState<GalleryItem[]>(defaultGallery);
+
+  useEffect(() => { setGalleryList(getGallery(defaultGallery)); }, []);
+
   const [activeCategory, setActiveCategory] = useState("all");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   const filtered = activeCategory === "all"
-    ? galleryImages
-    : galleryImages.filter((img) => img.category === activeCategory);
+    ? galleryList
+    : galleryList.filter((img) => img.category === activeCategory);
 
   const openLightbox = (index: number) => setLightboxIndex(index);
   const closeLightbox = () => setLightboxIndex(null);

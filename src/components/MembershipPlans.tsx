@@ -1,9 +1,18 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { Check } from "lucide-react";
-import { plans } from "@/data/plans";
+import { plans as defaultPlans } from "@/data/plans";
+import { getPlans } from "@/lib/storage";
+import { Plan } from "@/types";
 import ScrollAnimation from "./ScrollAnimation";
 
 export default function MembershipPlans() {
+  const [plansList, setPlansList] = useState<Plan[]>(defaultPlans);
+
+  useEffect(() => { setPlansList(getPlans(defaultPlans)); }, []);
+
   return (
     <section id="plans" className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -21,7 +30,7 @@ export default function MembershipPlans() {
         </ScrollAnimation>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {plans.map((plan, i) => (
+          {plansList.map((plan, i) => (
             <ScrollAnimation key={plan.name} delay={i * 100}>
               <div
                 className={`relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all h-full ${

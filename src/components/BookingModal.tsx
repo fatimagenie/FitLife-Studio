@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { X, Calendar, User, Mail, Phone, Clock } from "lucide-react";
+import { saveBooking } from "@/lib/storage";
 
 interface Props {
   isOpen: boolean;
@@ -12,19 +13,15 @@ interface Props {
   day?: string;
 }
 
-export default function BookingModal({ isOpen, onClose, className = "", trainer, time, day }: Props) {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    preferredTime: "",
-  });
+export default function BookingModal({ isOpen, onClose, className, trainer, time, day }: Props) {
+  const [formData, setFormData] = useState({ name: "", email: "", phone: "", preferredTime: "" });
   const [submitted, setSubmitted] = useState(false);
 
   if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    saveBooking({ ...formData, className, trainer, time, day });
     setSubmitted(true);
     setTimeout(() => {
       setSubmitted(false);

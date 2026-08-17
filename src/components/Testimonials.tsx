@@ -1,8 +1,13 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { Star } from "lucide-react";
-import { testimonials } from "@/data/testimonials";
+import { testimonials as defaultTestimonials } from "@/data/testimonials";
 import ScrollAnimation from "./ScrollAnimation";
 
 export default function Testimonials() {
+  const [list] = useState(defaultTestimonials);
+
   return (
     <section id="testimonials" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -19,7 +24,7 @@ export default function Testimonials() {
         </ScrollAnimation>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {testimonials.map((testimonial, i) => (
+          {list.map((testimonial, i) => (
             <ScrollAnimation key={testimonial.name} delay={i * 100}>
               <div className="bg-gray-50 rounded-2xl p-6 hover:bg-gray-100 transition-colors h-full">
                 <div className="flex items-center gap-1 mb-4">

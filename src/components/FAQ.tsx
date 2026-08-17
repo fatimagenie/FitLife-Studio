@@ -1,15 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronDown, HelpCircle } from "lucide-react";
-import { faqs } from "@/data/faqs";
+import { faqs as defaultFAQs } from "@/data/faqs";
+import { getFAQs } from "@/lib/storage";
+import { FAQ as FAQType } from "@/types";
 
 export default function FAQ() {
+  const [faqList, setFaqList] = useState<FAQType[]>(defaultFAQs);
+
+  useEffect(() => { setFaqList(getFAQs(defaultFAQs)); }, []);
+
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
     <div className="space-y-3">
-      {faqs.map((faq, index) => (
+      {faqList.map((faq, index) => (
         <div
           key={index}
           className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-shadow"

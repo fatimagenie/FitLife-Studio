@@ -1,9 +1,18 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { Instagram, Twitter, Linkedin } from "lucide-react";
-import { trainers } from "@/data/trainers";
+import { trainers as defaultTrainers } from "@/data/trainers";
+import { getTrainers } from "@/lib/storage";
+import { Trainer } from "@/types";
 import ScrollAnimation from "./ScrollAnimation";
 
 export default function Trainers() {
+  const [trainersList, setTrainersList] = useState<Trainer[]>(defaultTrainers);
+
+  useEffect(() => { setTrainersList(getTrainers(defaultTrainers)); }, []);
+
   return (
     <section id="trainers" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -21,7 +30,7 @@ export default function Trainers() {
         </ScrollAnimation>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {trainers.slice(0, 6).map((trainer, i) => (
+          {trainersList.slice(0, 6).map((trainer, i) => (
             <ScrollAnimation key={trainer.name} delay={i * 100}>
               <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all border border-gray-100 h-full">
                 <div className={`h-48 bg-gradient-to-br ${trainer.color} flex items-center justify-center relative overflow-hidden`}>
