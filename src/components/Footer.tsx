@@ -1,0 +1,88 @@
+import { Dumbbell, Instagram, Twitter, Youtube, Facebook } from "lucide-react";
+
+const footerLinks = {
+  Quick Links: ["Home", "About", "Plans", "Trainers", "Workouts"],
+  Services: ["Personal Training", "Group Classes", "Yoga Sessions", "Nutrition Plans", "Recovery"],
+  Support: ["FAQs", "Contact", "Terms", "Privacy", "Refund Policy"],
+};
+
+export default function Footer() {
+  return (
+    <footer className="bg-gray-900 text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-12">
+          {/* Brand */}
+          <div>
+            <a href="#home" className="flex items-center gap-2 mb-4">
+              <Dumbbell className="h-8 w-8 text-teal-400" />
+              <span className="text-xl font-bold">
+                FitLife <span className="text-teal-400">Studio</span>
+              </span>
+            </a>
+            <p className="text-gray-400 text-sm mb-6 leading-relaxed">
+              Transform your body, elevate your mind. Join the fitness revolution
+              at FitLife Studio.
+            </p>
+            <div className="flex items-center gap-4">
+              <a
+                href="#"
+                className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-teal-600 transition-colors"
+              >
+                <Instagram className="h-5 w-5" />
+              </a>
+              <a
+                href="#"
+                className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-teal-600 transition-colors"
+              >
+                <Twitter className="h-5 w-5" />
+              </a>
+              <a
+                href="#"
+                className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-teal-600 transition-colors"
+              >
+                <Youtube className="h-5 w-5" />
+              </a>
+              <a
+                href="#"
+                className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-teal-600 transition-colors"
+              >
+                <Facebook className="h-5 w-5" />
+              </a>
+            </div>
+          </div>
+
+          {/* Link Columns */}
+          {Object.entries(footerLinks).map(([title, links]) => (
+            <div key={title}>
+              <h4 className="font-semibold text-white mb-4">{title}</h4>
+              <ul className="space-y-3">
+                {links.map((link) => (
+                  <li key={link}>
+                    <a
+                      href="#"
+                      className="text-gray-400 text-sm hover:text-teal-400 transition-colors"
+                    >
+                      {link}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="mt-12 pt-8 border-t border-gray-800">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-gray-400 text-sm">
+              &copy; 2026 FitLife Studio. All rights reserved.
+            </p>
+            <p className="text-gray-500 text-xs">
+              Made with passion for fitness in India
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
