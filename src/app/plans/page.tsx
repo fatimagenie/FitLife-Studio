@@ -1,8 +1,9 @@
-import Navbar from "@/components/Navbar";
-import PageHero from "@/components/PageHero";
-import MembershipPlans from "@/components/MembershipPlans";
-import FAQ from "@/components/FAQ";
-import ScrollAnimation from "@/components/ScrollAnimation";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import PageHero from "@/components/layout/PageHero";
+import MembershipPlans from "@/components/home/MembershipPlans";
+import FAQ from "@/components/ui/FAQ";
+import ScrollAnimation from "@/components/layout/ScrollAnimation";
 
 export default function PlansPage() {
   return (
@@ -30,6 +31,7 @@ export default function PlansPage() {
           <FAQ />
         </div>
       </section>
+      <Footer />
     </div>
   );
 }

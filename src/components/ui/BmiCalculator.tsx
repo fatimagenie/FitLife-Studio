@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Calculator, Info } from "lucide-react";
-import { calculateBMI, ftToCm, lbsToKg, BMIResult } from "@/lib/bmi";
+import { calculateBMI, ftToCm, lbsToKg, BMIResult } from "@/lib/utils/bmi";
 
 export default function BmiCalculator() {
   const [unit, setUnit] = useState<"metric" | "imperial">("metric");

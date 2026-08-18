@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import { galleryImages as defaultGallery, galleryCategories } from "@/data/gallery";
-import { getGallery } from "@/lib/storage";
+import { getGallery } from "@/lib/services/storage";
 import { GalleryItem } from "@/types";
 
 export default function Gallery() {

@@ -1,7 +1,8 @@
-import Navbar from "@/components/Navbar";
-import PageHero from "@/components/PageHero";
-import Gallery from "@/components/Gallery";
-import ScrollAnimation from "@/components/ScrollAnimation";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import PageHero from "@/components/layout/PageHero";
+import Gallery from "@/components/ui/Gallery";
+import ScrollAnimation from "@/components/layout/ScrollAnimation";
 
 export default function GalleryPage() {
   return (
@@ -20,6 +21,7 @@ export default function GalleryPage() {
           </ScrollAnimation>
         </div>
       </section>
+      <Footer />
     </div>
   );
 }

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { isAuthenticated, logout } from "@/lib/auth";
+import { isAuthenticated, logout } from "@/lib/services/auth";
 import {
   LayoutDashboard,
   CreditCard,

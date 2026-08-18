@@ -4,9 +4,9 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Instagram, Twitter, Linkedin } from "lucide-react";
 import { trainers as defaultTrainers } from "@/data/trainers";
-import { getTrainers } from "@/lib/storage";
+import { getTrainers } from "@/lib/services/storage";
 import { Trainer } from "@/types";
-import ScrollAnimation from "./ScrollAnimation";
+import ScrollAnimation from "../layout/ScrollAnimation";
 
 export default function Trainers() {
   const [trainersList, setTrainersList] = useState<Trainer[]>(defaultTrainers);

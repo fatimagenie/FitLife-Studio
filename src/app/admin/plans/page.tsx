@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { plans as defaultPlans } from "@/data/plans";
-import { getPlans, savePlans } from "@/lib/storage";
+import { getPlans, savePlans } from "@/lib/services/storage";
 import { Plan } from "@/types";
 import { Plus, Pencil, Trash2, X, Check, GripVertical } from "lucide-react";
 

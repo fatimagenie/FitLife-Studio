@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Star } from "lucide-react";
 import { testimonials as defaultTestimonials } from "@/data/testimonials";
-import ScrollAnimation from "./ScrollAnimation";
+import ScrollAnimation from "../layout/ScrollAnimation";
 
 export default function Testimonials() {
   const [list] = useState(defaultTestimonials);

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { X, Calendar, User, Mail, Phone, Clock } from "lucide-react";
-import { saveBooking } from "@/lib/storage";
+import { saveBooking } from "@/lib/services/storage";
 
 interface Props {
   isOpen: boolean;

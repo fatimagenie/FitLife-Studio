@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { classes as defaultClasses, days } from "@/data/classes";
-import { getClasses, saveClasses } from "@/lib/storage";
+import { getClasses, saveClasses } from "@/lib/services/storage";
 import { ClassSchedule } from "@/types";
 import { Plus, Pencil, Trash2, X, Check } from "lucide-react";
 

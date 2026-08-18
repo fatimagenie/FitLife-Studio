@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Dumbbell, Users, Heart, Clock } from "lucide-react";
-import ScrollAnimation from "./ScrollAnimation";
+import ScrollAnimation from "../layout/ScrollAnimation";
 
 const features = [
   { icon: Dumbbell, title: "Modern Equipment", description: "State-of-the-art machines and free weights for every workout style." },

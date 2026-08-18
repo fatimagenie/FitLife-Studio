@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Clock, Users, Filter } from "lucide-react";
 import { classes as defaultClasses, days } from "@/data/classes";
-import { getClasses } from "@/lib/storage";
+import { getClasses } from "@/lib/services/storage";
 import { ClassSchedule as ClassScheduleType } from "@/types";
 import BookingModal from "./BookingModal";
 

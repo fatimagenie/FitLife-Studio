@@ -1,14 +1,10 @@
-import Navbar from "@/components/Navbar";
-import PageHero from "@/components/PageHero";
-import ScrollAnimation from "@/components/ScrollAnimation";
-import { Dumbbell, Users, Heart, Clock, Target, Shield, Award, TrendingUp } from "lucide-react";
-
-const features = [
-  { icon: Dumbbell, title: "Modern Equipment", description: "State-of-the-art machines and free weights for every workout style." },
-  { icon: Users, title: "Expert Trainers", description: "Certified professionals to guide you every step of the way." },
-  { icon: Heart, title: "Wellness Programs", description: "Holistic health programs including yoga, meditation, and nutrition." },
-  { icon: Clock, title: "Flexible Hours", description: "Open early morning to late night to fit your schedule." },
-];
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import PageHero from "@/components/layout/PageHero";
+import ScrollAnimation from "@/components/layout/ScrollAnimation";
+import WorkoutTips from "@/components/home/WorkoutTips";
+import Transformations from "@/components/home/Transformations";
+import { Target, Shield, Award, TrendingUp } from "lucide-react";
 
 const timeline = [
   { year: "2020", title: "Founded", description: "GOLD STANDARD GYM was born from a passion for fitness and community in Peshawar." },
@@ -36,54 +32,43 @@ export default function AboutPage() {
         breadcrumbs={[{ label: "About", href: "/about" }]}
       />
 
-      {/* Our Story */}
+      {/* Our Story - Professional Timeline */}
       <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <ScrollAnimation>
-                <span className="text-teal-600 font-semibold text-sm uppercase tracking-wider">Our Story</span>
-              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mt-3 mb-6">
-                Your Fitness Journey <span className="text-teal-600">Starts Here</span>
-              </h2>
-              <p className="text-gray-600 text-lg mb-6 leading-relaxed">
-                At GOLD STANDARD GYM, we believe fitness is not just about working out — it&apos;s about transforming your entire lifestyle. Our state-of-the-art facility combines cutting-edge equipment with personalized training approaches.
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ScrollAnimation>
+            <div className="text-center mb-16">
+              <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">Our Story</h2>
+              <p className="text-gray-500 text-lg max-w-2xl mx-auto leading-relaxed">
+                Since 2020, GOLD STANDARD GYM has been more than just a gym — we&apos;re a community
+                dedicated to transforming lives through innovative fitness solutions and unwavering support.
               </p>
-              <p className="text-gray-600 mb-8 leading-relaxed">
-                Located in the heart of Gulbahar, Peshawar, we&apos;ve helped hundreds of members achieve their fitness goals, from weight loss to muscle gain, from stress relief to athletic performance. Our team of certified trainers creates customized programs tailored to your unique needs.
-              </p>
-              <div className="grid sm:grid-cols-2 gap-6">
-                {features.map((f) => (
-                  <div key={f.title} className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <f.icon className="h-6 w-6 text-teal-600" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-1">{f.title}</h4>
-                      <p className="text-sm text-gray-600">{f.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </ScrollAnimation>
+            </div>
+          </ScrollAnimation>
 
-            <ScrollAnimation delay={200}>
-              <div className="relative">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-4">
-                    <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&q=80" alt="Gym Floor" className="rounded-2xl h-48 sm:h-64 w-full object-cover" />
-                    <div className="bg-gradient-to-br from-gray-700 to-gray-900 rounded-2xl h-32 sm:h-40 flex items-center justify-center text-white">
-                      <span className="text-4xl font-bold">10K+</span>
+          {/* Timeline */}
+          <div className="relative">
+            {/* Vertical Line */}
+            <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-purple-300 -translate-x-1/2" />
+
+            <div className="space-y-16">
+              {timeline.map((item, i) => (
+                <ScrollAnimation key={item.year} delay={i * 100}>
+                  <div className={`relative flex items-center ${i % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"}`}>
+                    {/* Dot */}
+                    <div className="absolute left-4 md:left-1/2 w-5 h-5 bg-purple-500 rounded-full -translate-x-1/2 z-10 ring-4 ring-white shadow-lg" />
+
+                    {/* Card */}
+                    <div className={`ml-14 md:ml-0 md:w-1/2 ${i % 2 === 0 ? "md:pr-16" : "md:pl-16"}`}>
+                      <div className={`bg-white border border-gray-100 rounded-2xl p-8 shadow-sm hover:shadow-lg transition-all ${i % 2 === 0 ? "md:text-right" : ""}`}>
+                        <span className="text-purple-500 font-bold text-lg">{item.year}</span>
+                        <h3 className="font-bold text-gray-900 text-xl mt-1 mb-3">{item.title}</h3>
+                        <p className="text-gray-500 text-sm leading-relaxed">{item.description}</p>
+                      </div>
                     </div>
                   </div>
-                  <div className="space-y-4 mt-8">
-                    <div className="bg-gradient-to-br from-gray-700 to-gray-900 rounded-2xl h-32 sm:h-40 flex items-center justify-center text-white">
-                      <span className="text-4xl font-bold">98%</span>
-                    </div>
-                    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80" alt="Training Session" className="rounded-2xl h-48 sm:h-64 w-full object-cover" />
-                  </div>
-                </div>
-              </div>
-            </ScrollAnimation>
+                </ScrollAnimation>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -116,37 +101,26 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Timeline */}
+      {/* Transformations */}
       <section className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollAnimation>
             <div className="text-center mb-16">
-              <span className="text-teal-600 font-semibold text-sm uppercase tracking-wider">Our Journey</span>
+              <span className="text-teal-600 font-semibold text-sm uppercase tracking-wider">Transformations</span>
               <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mt-3 mb-4">
-                Milestones <span className="text-teal-600">That Matter</span>
+                Real People, Real <span className="text-teal-600">Results</span>
               </h2>
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                See how our members have transformed their lives through dedicated training and our expert guidance.
+              </p>
             </div>
           </ScrollAnimation>
-
-          <div className="relative">
-            <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-teal-200 -translate-x-1/2" />
-            <div className="space-y-12">
-              {timeline.map((item, i) => (
-                <ScrollAnimation key={item.year} delay={i * 100}>
-                  <div className={`relative flex items-center ${i % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"}`}>
-                    <div className="absolute left-4 md:left-1/2 w-4 h-4 bg-teal-600 rounded-full -translate-x-1/2 z-10 ring-4 ring-white" />
-                    <div className={`ml-12 md:ml-0 md:w-1/2 ${i % 2 === 0 ? "md:pr-12 md:text-right" : "md:pl-12"}`}>
-                      <span className="text-teal-600 font-bold text-lg">{item.year}</span>
-                      <h3 className="font-bold text-gray-900 text-lg">{item.title}</h3>
-                      <p className="text-gray-600 text-sm">{item.description}</p>
-                    </div>
-                  </div>
-                </ScrollAnimation>
-              ))}
-            </div>
-          </div>
+          <Transformations />
         </div>
       </section>
+
+      {/* Workout Tips */}
+      <WorkoutTips />
 
       {/* CTA */}
       <section className="py-20 bg-gradient-to-br from-teal-600 to-teal-800">
@@ -160,6 +134,7 @@ export default function AboutPage() {
           </ScrollAnimation>
         </div>
       </section>
+      <Footer />
     </div>
   );
 }

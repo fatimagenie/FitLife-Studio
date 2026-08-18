@@ -4,9 +4,9 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Check } from "lucide-react";
 import { plans as defaultPlans } from "@/data/plans";
-import { getPlans } from "@/lib/storage";
+import { getPlans } from "@/lib/services/storage";
 import { Plan } from "@/types";
-import ScrollAnimation from "./ScrollAnimation";
+import ScrollAnimation from "../layout/ScrollAnimation";
 
 export default function MembershipPlans() {
   const [plansList, setPlansList] = useState<Plan[]>(defaultPlans);

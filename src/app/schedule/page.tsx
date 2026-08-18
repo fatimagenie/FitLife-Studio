@@ -1,7 +1,8 @@
-import Navbar from "@/components/Navbar";
-import PageHero from "@/components/PageHero";
-import ClassSchedule from "@/components/ClassSchedule";
-import ScrollAnimation from "@/components/ScrollAnimation";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import PageHero from "@/components/layout/PageHero";
+import ClassSchedule from "@/components/ui/ClassSchedule";
+import ScrollAnimation from "@/components/layout/ScrollAnimation";
 
 export default function SchedulePage() {
   return (
@@ -20,6 +21,7 @@ export default function SchedulePage() {
           </ScrollAnimation>
         </div>
       </section>
+      <Footer />
     </div>
   );
 }

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { plans } from "@/data/plans";
 import { trainers } from "@/data/trainers";
 import { classes } from "@/data/classes";
-import { getBookings, getMessages } from "@/lib/storage";
+import { getBookings, getMessages } from "@/lib/services/storage";
 import { CreditCard, Users, Calendar, MessageSquare, BookOpen, TrendingUp } from "lucide-react";
 
 export default function AdminDashboard() {

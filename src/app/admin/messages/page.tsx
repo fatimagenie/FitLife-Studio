@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getMessages, deleteMessage, markMessageRead, ContactMessage } from "@/lib/storage";
+import { getMessages, deleteMessage, markMessageRead, ContactMessage } from "@/lib/services/storage";
 import { Trash2, Mail, MailOpen, Eye } from "lucide-react";
 
 export default function AdminMessagesPage() {

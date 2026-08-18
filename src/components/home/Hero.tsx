@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, Play } from "lucide-react";
-import ScrollAnimation from "./ScrollAnimation";
+import ScrollAnimation from "../layout/ScrollAnimation";
 
 export default function Hero() {
   return (

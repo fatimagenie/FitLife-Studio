@@ -1,9 +1,10 @@
 "use client";
 
-import Navbar from "@/components/Navbar";
-import PageHero from "@/components/PageHero";
-import ScrollAnimation from "@/components/ScrollAnimation";
-import BmiCalculator from "@/components/BmiCalculator";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import PageHero from "@/components/layout/PageHero";
+import ScrollAnimation from "@/components/layout/ScrollAnimation";
+import BmiCalculator from "@/components/ui/BmiCalculator";
 import { Mail, Phone, MapPin, Send, Clock } from "lucide-react";
 import { useState } from "react";
 
@@ -132,6 +133,7 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
+      <Footer />
     </div>
   );
 }

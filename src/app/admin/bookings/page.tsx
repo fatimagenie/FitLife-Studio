@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getBookings, deleteBooking, updateBookingStatus, Booking } from "@/lib/storage";
+import { getBookings, deleteBooking, updateBookingStatus, Booking } from "@/lib/services/storage";
 import { Trash2, CheckCircle, Clock, XCircle, Filter } from "lucide-react";
 
 export default function AdminBookingsPage() {

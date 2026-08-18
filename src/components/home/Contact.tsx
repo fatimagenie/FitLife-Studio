@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
-import { saveMessage } from "@/lib/storage";
-import ScrollAnimation from "./ScrollAnimation";
+import { saveMessage } from "@/lib/services/storage";
+import ScrollAnimation from "../layout/ScrollAnimation";
 
 export default function Contact() {
   const [formData, setFormData] = useState({ name: "", email: "", phone: "", message: "" });

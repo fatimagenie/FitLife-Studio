@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { galleryImages as defaultGallery, galleryCategories } from "@/data/gallery";
-import { getGallery, saveGallery } from "@/lib/storage";
+import { getGallery, saveGallery } from "@/lib/services/storage";
 import { GalleryItem } from "@/types";
 import { Plus, Trash2, X, Check, Image as ImageIcon } from "lucide-react";
 

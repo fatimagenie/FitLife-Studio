@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { faqs as defaultFAQs } from "@/data/faqs";
-import { getFAQs, saveFAQs } from "@/lib/storage";
+import { getFAQs, saveFAQs } from "@/lib/services/storage";
 import { FAQ } from "@/types";
 import { Plus, Pencil, Trash2, X, Check } from "lucide-react";
 

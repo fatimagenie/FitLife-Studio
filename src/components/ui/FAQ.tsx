@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { ChevronDown, HelpCircle } from "lucide-react";
 import { faqs as defaultFAQs } from "@/data/faqs";
-import { getFAQs } from "@/lib/storage";
+import { getFAQs } from "@/lib/services/storage";
 import { FAQ as FAQType } from "@/types";
 
 export default function FAQ() {

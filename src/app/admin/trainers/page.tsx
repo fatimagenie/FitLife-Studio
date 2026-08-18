@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { trainers as defaultTrainers } from "@/data/trainers";
-import { getTrainers, saveTrainers } from "@/lib/storage";
+import { getTrainers, saveTrainers } from "@/lib/services/storage";
 import { Trainer } from "@/types";
 import { Plus, Pencil, Trash2, X, Check } from "lucide-react";
 

@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import Navbar from "@/components/Navbar";
-import PageHero from "@/components/PageHero";
-import ScrollAnimation from "@/components/ScrollAnimation";
-import BookingModal from "@/components/BookingModal";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import PageHero from "@/components/layout/PageHero";
+import ScrollAnimation from "@/components/layout/ScrollAnimation";
+import BookingModal from "@/components/ui/BookingModal";
 import { trainers } from "@/data/trainers";
 import { Instagram, Twitter, Linkedin, Award } from "lucide-react";
 
@@ -113,6 +114,7 @@ export default function TrainersPage() {
         onClose={() => setBookingModal({ open: false })}
         trainer={bookingModal.trainer}
       />
+      <Footer />
     </div>
   );
 }

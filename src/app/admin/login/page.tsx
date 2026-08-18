@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { login } from "@/lib/auth";
+import { login } from "@/lib/services/auth";
 import { Dumbbell, Eye, EyeOff } from "lucide-react";
 
 export default function AdminLoginPage() {
