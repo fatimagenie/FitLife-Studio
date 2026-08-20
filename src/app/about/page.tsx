@@ -4,7 +4,7 @@ import PageHero from "@/components/layout/PageHero";
 import ScrollAnimation from "@/components/layout/ScrollAnimation";
 import WorkoutTips from "@/components/home/WorkoutTips";
 import Transformations from "@/components/home/Transformations";
-import { Target, Shield, Award, TrendingUp } from "lucide-react";
+import { Target, Shield, Award, TrendingUp, Leaf, Users, UserCheck } from "lucide-react";
 
 const timeline = [
   { year: "2020", title: "Founded", description: "GOLD STANDARD GYM was born from a passion for fitness and community in Peshawar." },
@@ -13,6 +13,12 @@ const timeline = [
   { year: "2024", title: "Award Winning", description: "Recognized as one of the top gyms in Peshawar for quality training." },
   { year: "2025", title: "New Programs", description: "Launched CrossFit, Pilates Reformer, and Boxing programs." },
   { year: "2026", title: "Going Digital", description: "Online classes, fitness app, and virtual training now available." },
+];
+
+const philosophy = [
+  { icon: Leaf, title: "Holistic Wellness", description: "We believe in nurturing both body and mind for complete well-being." },
+  { icon: Users, title: "Community First", description: "Our supportive community helps every member feel motivated and connected." },
+  { icon: UserCheck, title: "Personalized Journey", description: "Every fitness journey is unique, so we create individualized programs." },
 ];
 
 const values = [
@@ -69,6 +75,34 @@ export default function AboutPage() {
                 </ScrollAnimation>
               ))}
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Our Philosophy */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ScrollAnimation>
+            <div className="text-center mb-16">
+              <span className="text-teal-600 font-semibold text-sm uppercase tracking-wider">Our Philosophy</span>
+              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mt-3 mb-4">
+                What <span className="text-teal-600">Guides Us</span>
+              </h2>
+            </div>
+          </ScrollAnimation>
+
+          <div className="grid sm:grid-cols-3 gap-8">
+            {philosophy.map((item, i) => (
+              <ScrollAnimation key={item.title} delay={i * 100}>
+                <div className="bg-white rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-all">
+                  <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <item.icon className="h-8 w-8 text-purple-600" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-3">{item.title}</h3>
+                  <p className="text-gray-600">{item.description}</p>
+                </div>
+              </ScrollAnimation>
+            ))}
           </div>
         </div>
       </section>
