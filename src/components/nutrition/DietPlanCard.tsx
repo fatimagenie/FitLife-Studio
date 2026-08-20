@@ -25,7 +25,7 @@ export default function DietPlanCard({ name, description, dailyCalories, color, 
   return (
     <button
       onClick={onClick}
-      className={`relative bg-white rounded-2xl p-6 text-left transition-all hover:shadow-xl h-full ${
+      className={`relative bg-white rounded-2xl p-6 text-left transition-all hover:shadow-xl h-full overflow-hidden ${
         isSelected ? "ring-2 ring-teal-600 shadow-xl scale-105" : "shadow-lg border border-gray-100"
       }`}
     >

@@ -30,7 +30,7 @@ export default function BmiCalculator() {
   };
 
   return (
-    <div className="bg-white rounded-2xl p-8 shadow-lg">
+    <div className="bg-white rounded-2xl p-8 shadow-lg overflow-hidden">
       <div className="flex items-center gap-3 mb-6">
         <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center">
           <Calculator className="h-6 w-6 text-teal-600" />

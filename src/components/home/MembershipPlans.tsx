@@ -33,7 +33,7 @@ export default function MembershipPlans() {
           {plansList.map((plan, i) => (
             <ScrollAnimation key={plan.name} delay={i * 100}>
               <div
-                className={`relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all h-full ${
+                className={`relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all h-full overflow-hidden ${
                   plan.popular
                     ? "ring-2 ring-teal-600 scale-105"
                     : "border border-gray-100"

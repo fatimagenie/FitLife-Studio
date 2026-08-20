@@ -120,7 +120,7 @@ export default function ServicesPage() {
               { number: "50+", label: "Weekly Classes" },
             ].map((stat, i) => (
               <ScrollAnimation key={stat.label} delay={i * 100}>
-                <div className="bg-white rounded-2xl p-6 text-center shadow-lg">
+                <div className="bg-white rounded-2xl p-6 text-center shadow-lg overflow-hidden">
                   <span className="text-4xl font-bold text-teal-600">{stat.number}</span>
                   <p className="text-gray-600 mt-2">{stat.label}</p>
                 </div>

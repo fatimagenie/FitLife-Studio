@@ -3,6 +3,7 @@ import Hero from "@/components/home/Hero";
 import Footer from "@/components/layout/Footer";
 import WhatsAppButton from "@/components/ui/WhatsAppButton";
 import ScrollAnimation from "@/components/layout/ScrollAnimation";
+import BookClass from "@/components/home/BookClass";
 import Link from "next/link";
 import { ArrowRight, Dumbbell, Users, Heart } from "lucide-react";
 
@@ -52,6 +53,9 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        {/* Book a Class */}
+        <BookClass />
 
         {/* CTA Section */}
         <section className="py-20 bg-gradient-to-br from-teal-600 to-teal-800">

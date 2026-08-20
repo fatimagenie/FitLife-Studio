@@ -38,7 +38,7 @@ export default function AboutPage() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {values.map((v, i) => (
               <ScrollAnimation key={v.title} delay={i * 100}>
-                <div className="bg-white rounded-2xl p-6 text-center shadow-lg hover:shadow-xl transition-all">
+                <div className="bg-white rounded-2xl p-6 text-center shadow-lg hover:shadow-xl transition-all overflow-hidden">
                   <div className="w-14 h-14 bg-teal-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <v.icon className="h-7 w-7 text-teal-600" />
                   </div>

@@ -25,7 +25,7 @@ export default function NutritionTips() {
         const IconComponent = categoryIcons[tip.category] || Lightbulb;
         return (
           <ScrollAnimation key={tip.title} delay={i * 50}>
-            <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all border border-gray-100 h-full">
+            <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all border border-gray-100 h-full overflow-hidden">
               <div className={`w-12 h-12 bg-gradient-to-br ${categoryColors[tip.category]} rounded-xl flex items-center justify-center mb-4`}>
                 <IconComponent className="h-6 w-6 text-white" />
               </div>

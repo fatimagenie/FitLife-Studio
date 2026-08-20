@@ -60,7 +60,7 @@ export default function ClassSchedule() {
       </div>
 
       {/* Schedule Grid */}
-      <div className="space-y-3">
+      <div className="space-y-4">
         {filtered.length === 0 ? (
           <div className="text-center py-12 text-gray-500">
             <p className="text-lg">No classes scheduled for this day.</p>
@@ -70,7 +70,7 @@ export default function ClassSchedule() {
           filtered.map((cls) => (
             <div
               key={cls.id}
-              className="bg-white rounded-xl border border-gray-100 p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4 hover:shadow-lg transition-all"
+              className="bg-white rounded-xl border border-gray-100 p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4 hover:shadow-lg transition-all overflow-hidden"
             >
               {/* Color Bar */}
               <div className={`w-1.5 h-16 sm:h-12 rounded-full bg-gradient-to-b ${cls.color} flex-shrink-0 hidden sm:block`} />

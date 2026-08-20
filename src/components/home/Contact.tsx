@@ -37,7 +37,7 @@ export default function Contact() {
 
         <div className="grid lg:grid-cols-2 gap-12">
           <ScrollAnimation>
-            <div className="bg-white rounded-2xl p-8 shadow-lg">
+            <div className="bg-white rounded-2xl p-8 shadow-lg overflow-hidden">
               <h3 className="text-xl font-bold text-gray-900 mb-6">Send Us a Message</h3>
               {submitted ? (
                 <div className="text-center py-12">
@@ -77,7 +77,7 @@ export default function Contact() {
 
           <ScrollAnimation delay={200}>
             <div className="space-y-8">
-              <div className="bg-white rounded-2xl p-8 shadow-lg">
+              <div className="bg-white rounded-2xl p-8 shadow-lg overflow-hidden">
                 <h3 className="text-xl font-bold text-gray-900 mb-6">Contact Information</h3>
                 <div className="space-y-6">
                   <div className="flex items-start gap-4">

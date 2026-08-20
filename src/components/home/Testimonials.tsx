@@ -26,7 +26,7 @@ export default function Testimonials() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {list.map((testimonial, i) => (
             <ScrollAnimation key={testimonial.name} delay={i * 100}>
-              <div className="bg-gray-50 rounded-2xl p-6 hover:bg-gray-100 transition-colors h-full">
+              <div className="bg-gray-50 rounded-2xl p-6 hover:bg-gray-100 transition-colors h-full overflow-hidden">
                 <div className="flex items-center gap-1 mb-4">
                   {Array.from({ length: testimonial.rating }).map((_, i) => (
                     <Star key={i} className="h-4 w-4 text-yellow-400 fill-current" />
