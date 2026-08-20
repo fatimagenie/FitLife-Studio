@@ -78,3 +78,38 @@ export interface NavLink {
   name: string;
   href: string;
 }
+
+export interface Meal {
+  time: string;
+  name: string;
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+}
+
+export interface DailyMealPlan {
+  day: string;
+  meals: Meal[];
+  totalCalories: number;
+  totalProtein: number;
+  totalCarbs: number;
+  totalFat: number;
+}
+
+export interface DietPlan {
+  id: string;
+  name: string;
+  description: string;
+  dailyCalories: string;
+  weeklyPlan: DailyMealPlan[];
+  tips: string[];
+  color: string;
+  icon: string;
+}
+
+export interface NutritionTip {
+  title: string;
+  description: string;
+  category: "hydration" | "protein" | "carbs" | "timing" | "general";
+}
