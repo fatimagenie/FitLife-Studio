@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X, Dumbbell } from "lucide-react";
@@ -23,76 +23,155 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
 
+  const closeMenu = useCallback(() => {
+    setMobileMenuOpen(false);
+    document.body.classList.remove("no-scroll");
+  }, []);
+
+  const openMenu = useCallback(() => {
+    setMobileMenuOpen(true);
+    document.body.classList.add("no-scroll");
+  }, []);
+
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    closeMenu();
+  }, [pathname, closeMenu]);
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && mobileMenuOpen) closeMenu();
+    };
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [mobileMenuOpen, closeMenu]);
+
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      scrolled ? "bg-white/95 backdrop-blur-sm shadow-md" : "bg-white/80 backdrop-blur-sm"
-    }`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <Link href="/" className="flex items-center gap-2">
-            <Dumbbell className="h-8 w-8 text-teal-600" />
-            <span className="text-xl font-bold text-gray-900">
-              GOLD <span className="text-teal-600">STANDARD</span>
-            </span>
-          </Link>
-
-          <div className="hidden md:flex items-center gap-6">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                className={`font-medium transition-colors ${
-                  pathname === link.href
-                    ? "text-teal-600"
-                    : "text-gray-600 hover:text-teal-600"
-                }`}
-              >
-                {link.name}
-              </Link>
-            ))}
-            <Link
-              href="/plans"
-              className="bg-teal-600 text-white px-5 py-2 rounded-full font-medium hover:bg-teal-700 transition-colors"
-            >
-              Join Now
+    <>
+      <nav
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 safe-top ${
+          scrolled
+            ? "bg-white/95 backdrop-blur-md shadow-lg"
+            : "bg-white/80 backdrop-blur-sm"
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <Link href="/" className="flex items-center gap-2">
+              <Dumbbell className="h-8 w-8 text-teal-600" />
+              <span className="text-xl font-bold text-gray-900">
+                GOLD <span className="text-teal-600">STANDARD</span>
+              </span>
             </Link>
-          </div>
 
-          <button className="md:hidden p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-            {mobileMenuOpen ? <X className="h-6 w-6 text-gray-900" /> : <Menu className="h-6 w-6 text-gray-900" />}
-          </button>
+            <div className="hidden md:flex items-center gap-1">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                    pathname === link.href
+                      ? "text-teal-600 bg-teal-50"
+                      : "text-gray-600 hover:text-teal-600 hover:bg-gray-50"
+                  }`}
+                >
+                  {link.name}
+                </Link>
+              ))}
+              <Link
+                href="/plans"
+                className="ml-2 bg-teal-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-teal-700 transition-all shadow-md hover:shadow-lg"
+              >
+                Join Now
+              </Link>
+            </div>
+
+            <button
+              className="md:hidden p-2.5 rounded-xl hover:bg-gray-100 transition-colors"
+              onClick={mobileMenuOpen ? closeMenu : openMenu}
+              aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+            >
+              {mobileMenuOpen ? (
+                <X className="h-6 w-6 text-gray-900" />
+              ) : (
+                <Menu className="h-6 w-6 text-gray-900" />
+              )}
+            </button>
+          </div>
         </div>
+      </nav>
 
-        {mobileMenuOpen && (
-          <div className="md:hidden pb-4 border-t border-gray-100">
-            {navLinks.map((link) => (
+      {/* Mobile Menu Backdrop */}
+      {mobileMenuOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm md:hidden animate-fade-in"
+          onClick={closeMenu}
+        />
+      )}
+
+      {/* Mobile Menu Panel */}
+      <div
+        className={`fixed top-0 right-0 bottom-0 z-50 w-80 max-w-[85vw] bg-white shadow-2xl md:hidden transition-transform duration-300 ease-out ${
+          mobileMenuOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        <div className="flex flex-col h-full">
+          {/* Mobile Menu Header */}
+          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+            <Link href="/" className="flex items-center gap-2" onClick={closeMenu}>
+              <Dumbbell className="h-7 w-7 text-teal-600" />
+              <span className="text-lg font-bold text-gray-900">
+                GOLD <span className="text-teal-600">STANDARD</span>
+              </span>
+            </Link>
+            <button
+              onClick={closeMenu}
+              className="p-2 rounded-xl hover:bg-gray-100 transition-colors"
+              aria-label="Close menu"
+            >
+              <X className="h-5 w-5 text-gray-500" />
+            </button>
+          </div>
+
+          {/* Nav Links */}
+          <div className="flex-1 overflow-y-auto py-4 px-3 hide-scrollbar">
+            {navLinks.map((link, i) => (
               <Link
                 key={link.name}
                 href={link.href}
-                className={`block py-3 font-medium ${
-                  pathname === link.href ? "text-teal-600" : "text-gray-600 hover:text-teal-600"
+                className={`flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-medium transition-all mb-1 ${
+                  pathname === link.href
+                    ? "text-teal-600 bg-teal-50 border-l-4 border-teal-600"
+                    : "text-gray-600 hover:text-teal-600 hover:bg-gray-50"
                 }`}
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={closeMenu}
+                style={{ animationDelay: `${i * 30}ms` }}
               >
                 {link.name}
               </Link>
             ))}
+          </div>
+
+          {/* Mobile Menu Footer */}
+          <div className="px-5 py-5 border-t border-gray-100 safe-bottom">
             <Link
               href="/plans"
-              className="block mt-2 bg-teal-600 text-white px-5 py-3 rounded-full font-medium text-center hover:bg-teal-700 transition-colors"
-              onClick={() => setMobileMenuOpen(false)}
+              className="block w-full bg-teal-600 text-white py-3.5 rounded-xl font-semibold text-center hover:bg-teal-700 transition-all shadow-md"
+              onClick={closeMenu}
             >
               Join Now
             </Link>
+            <p className="text-center text-xs text-gray-400 mt-3">
+              #1 Gym in Gulbahar, Peshawar
+            </p>
           </div>
-        )}
+        </div>
       </div>
-    </nav>
+    </>
   );
 }

@@ -1,9 +1,8 @@
 "use client";
 
+import { useEffect, useState, useCallback } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import { isAuthenticated, logout } from "@/lib/services/auth";
 import {
   LayoutDashboard,
   CreditCard,
@@ -11,13 +10,15 @@ import {
   Calendar,
   Image,
   HelpCircle,
-  MessageSquare,
+  Mail,
   BookOpen,
   LogOut,
   Menu,
   X,
   Dumbbell,
+  ExternalLink,
 } from "lucide-react";
+import { isAuthenticated, logout } from "@/lib/services/auth";
 
 const sidebarLinks = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -26,15 +27,35 @@ const sidebarLinks = [
   { name: "Class Schedule", href: "/admin/schedule", icon: Calendar },
   { name: "Gallery", href: "/admin/gallery", icon: Image },
   { name: "FAQs", href: "/admin/faqs", icon: HelpCircle },
-  { name: "Messages", href: "/admin/messages", icon: MessageSquare },
+  { name: "Messages", href: "/admin/messages", icon: Mail },
   { name: "Bookings", href: "/admin/bookings", icon: BookOpen },
 ];
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
+const pageTitles: Record<string, string> = {
+  "/admin": "Dashboard",
+  "/admin/plans": "Membership Plans",
+  "/admin/trainers": "Trainers",
+  "/admin/schedule": "Class Schedule",
+  "/admin/gallery": "Gallery",
+  "/admin/faqs": "FAQs",
+  "/admin/messages": "Messages",
+  "/admin/bookings": "Bookings",
+};
+
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const router = useRouter();
+  const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
+
+  const closeSidebar = useCallback(() => {
+    setSidebarOpen(false);
+    document.body.classList.remove("no-scroll");
+  }, []);
 
   useEffect(() => {
     if (pathname === "/admin/login") {
@@ -48,15 +69,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
   }, [pathname, router]);
 
-  const handleLogout = () => {
-    logout();
-    router.push("/admin/login");
-  };
+  useEffect(() => {
+    closeSidebar();
+  }, [pathname, closeSidebar]);
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && sidebarOpen) closeSidebar();
+    };
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [sidebarOpen, closeSidebar]);
 
   if (!authChecked) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <div className="animate-spin h-8 w-8 border-4 border-teal-600 border-t-transparent rounded-full" />
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-teal-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -65,76 +93,122 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return <>{children}</>;
   }
 
+  const currentPage = pageTitles[pathname] || "Admin";
+
   return (
-    <div className="min-h-screen bg-gray-100 flex">
+    <div className="min-h-screen bg-gray-50">
+      {/* Mobile Sidebar Backdrop */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden animate-fade-in"
+          onClick={closeSidebar}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-gray-900 text-white transform transition-transform duration-300 lg:translate-x-0 lg:static lg:inset-auto ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
-        <div className="flex items-center gap-3 px-6 py-5 border-b border-gray-800">
-          <Dumbbell className="h-8 w-8 text-teal-400" />
-          <div>
-            <div className="font-bold text-sm">GOLD STANDARD</div>
-            <div className="text-xs text-gray-400">Admin Panel</div>
-          </div>
-          <button onClick={() => setSidebarOpen(false)} className="ml-auto lg:hidden">
-            <X className="h-5 w-5" />
+      <aside
+        className={`fixed top-0 left-0 bottom-0 z-50 w-72 bg-gray-900 text-white flex flex-col transition-transform duration-300 ease-out lg:translate-x-0 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        {/* Sidebar Header */}
+        <div className="flex items-center justify-between px-5 py-5 border-b border-gray-800">
+          <Link href="/admin" className="flex items-center gap-2.5" onClick={closeSidebar}>
+            <div className="w-9 h-9 bg-teal-600 rounded-xl flex items-center justify-center">
+              <Dumbbell className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <div className="text-sm font-bold tracking-tight">GOLD STANDARD</div>
+              <div className="text-[11px] text-gray-400">Admin Panel</div>
+            </div>
+          </Link>
+          <button
+            onClick={closeSidebar}
+            className="lg:hidden p-1.5 rounded-lg hover:bg-gray-800 transition-colors"
+            aria-label="Close sidebar"
+          >
+            <X className="h-5 w-5 text-gray-400" />
           </button>
         </div>
 
-        <nav className="px-4 py-4 space-y-1">
-          {sidebarLinks.map((link) => {
-            const isActive = pathname === link.href;
-            return (
-              <Link
-                key={link.name}
-                href={link.href}
-                onClick={() => setSidebarOpen(false)}
-                className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                  isActive
-                    ? "bg-teal-600 text-white"
-                    : "text-gray-300 hover:bg-gray-800 hover:text-white"
-                }`}
-              >
-                <link.icon className="h-5 w-5" />
-                {link.name}
-              </Link>
-            );
-          })}
+        {/* Nav Links */}
+        <nav className="flex-1 py-4 px-3 overflow-y-auto hide-scrollbar">
+          <div className="space-y-1">
+            {sidebarLinks.map((link) => {
+              const isActive = pathname === link.href;
+              return (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  onClick={closeSidebar}
+                  className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                    isActive
+                      ? "bg-teal-600 text-white shadow-md shadow-teal-600/30"
+                      : "text-gray-400 hover:text-white hover:bg-gray-800"
+                  }`}
+                >
+                  <link.icon className="h-5 w-5 flex-shrink-0" />
+                  {link.name}
+                </Link>
+              );
+            })}
+          </div>
         </nav>
 
-        <div className="absolute bottom-0 left-0 right-0 px-4 py-4 border-t border-gray-800">
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-800 hover:text-white w-full transition-colors"
+        {/* Sidebar Footer */}
+        <div className="px-3 py-4 border-t border-gray-800 space-y-2">
+          <Link
+            href="/"
+            target="_blank"
+            className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-gray-800 transition-all"
+            onClick={closeSidebar}
           >
-            <LogOut className="h-5 w-5" />
+            <ExternalLink className="h-5 w-5 flex-shrink-0" />
+            View Website
+          </Link>
+          <button
+            onClick={() => {
+              logout();
+              router.push("/admin/login");
+            }}
+            className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all w-full"
+          >
+            <LogOut className="h-5 w-5 flex-shrink-0" />
             Logout
           </button>
         </div>
       </aside>
 
-      {/* Overlay for mobile */}
-      {sidebarOpen && (
-        <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />
-      )}
-
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Header */}
-        <header className="bg-white shadow-sm sticky top-0 z-30">
-          <div className="flex items-center justify-between px-6 py-4">
-            <div className="flex items-center gap-4">
-              <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 hover:bg-gray-100 rounded-lg">
-                <Menu className="h-5 w-5" />
+      <div className="lg:ml-72">
+        {/* Top Header */}
+        <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-gray-200 safe-top">
+          <div className="flex items-center justify-between h-16 px-4 sm:px-6">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => {
+                  setSidebarOpen(true);
+                  document.body.classList.add("no-scroll");
+                }}
+                className="lg:hidden p-2 rounded-xl hover:bg-gray-100 transition-colors"
+                aria-label="Open sidebar"
+              >
+                <Menu className="h-5 w-5 text-gray-600" />
               </button>
-              <h1 className="text-lg font-semibold text-gray-900">
-                {sidebarLinks.find((l) => l.href === pathname)?.name || "Admin"}
+              <h1 className="text-lg sm:text-xl font-bold text-gray-900">
+                {currentPage}
               </h1>
             </div>
-            <div className="flex items-center gap-4">
-              <Link href="/" target="_blank" className="text-sm text-gray-500 hover:text-teal-600 transition-colors">
-                View Website
+            <div className="flex items-center gap-3">
+              <Link
+                href="/"
+                target="_blank"
+                className="hidden sm:flex items-center gap-2 text-sm text-gray-500 hover:text-teal-600 transition-colors"
+              >
+                <ExternalLink className="h-4 w-4" />
+                View Site
               </Link>
-              <div className="w-8 h-8 bg-teal-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
+              <div className="w-9 h-9 bg-teal-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
                 A
               </div>
             </div>
@@ -142,7 +216,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 p-6">{children}</main>
+        <main className="p-4 sm:p-6 lg:p-8">{children}</main>
       </div>
     </div>
   );

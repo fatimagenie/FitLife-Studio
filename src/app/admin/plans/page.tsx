@@ -1,186 +1,264 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Plus, Edit, Trash2, X, Star, Check } from "lucide-react";
 import { plans as defaultPlans } from "@/data/plans";
 import { getPlans, savePlans } from "@/lib/services/storage";
 import { Plan } from "@/types";
-import { Plus, Pencil, Trash2, X, Check, GripVertical } from "lucide-react";
 
-const emptyPlan: Plan = { name: "", price: "", period: "/month", description: "", features: [], popular: false };
-
-export default function AdminPlansPage() {
-  const [plansList, setPlansList] = useState<Plan[]>([]);
+export default function AdminPlans() {
+  const [plans, setPlans] = useState<Plan[]>(defaultPlans);
+  const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState<Plan | null>(null);
-  const [isAdding, setIsAdding] = useState(false);
-  const [form, setForm] = useState<Plan>(emptyPlan);
-  const [featureInput, setFeatureInput] = useState("");
   const [saved, setSaved] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    price: "",
+    period: "/month",
+    popular: false,
+    description: "",
+    features: [""],
+  });
 
-  useEffect(() => { setPlansList(getPlans(defaultPlans)); }, []);
+  useEffect(() => {
+    setPlans(getPlans(defaultPlans));
+  }, []);
+
+  const openAdd = () => {
+    setEditing(null);
+    setFormData({ name: "", price: "", period: "/month", popular: false, description: "", features: [""] });
+    setShowModal(true);
+  };
+
+  const openEdit = (plan: Plan) => {
+    setEditing(plan);
+    setFormData({
+      name: plan.name,
+      price: plan.price.toString(),
+      period: plan.period,
+      popular: plan.popular,
+      description: plan.description,
+      features: [...plan.features],
+    });
+    setShowModal(true);
+  };
 
   const handleSave = () => {
-    savePlans(plansList);
+    if (!formData.name.trim() || !formData.price.trim()) return;
+    const planData: Plan = {
+      name: formData.name.trim(),
+      price: formData.price || "0",
+      period: formData.period,
+      popular: formData.popular,
+      description: formData.description.trim(),
+      features: formData.features.filter((f) => f.trim()),
+    };
+
+    let updated: Plan[];
+    if (editing) {
+      updated = plans.map((p) => (p.name === editing.name ? planData : p));
+    } else {
+      updated = [...plans, planData];
+    }
+    setPlans(updated);
+    savePlans(updated);
+    setShowModal(false);
     setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
-  };
-
-  const handleAdd = () => {
-    const newPlan = { ...form, id: Date.now().toString() };
-    setPlansList([...plansList, newPlan]);
-    setForm(emptyPlan);
-    setIsAdding(false);
-    setTimeout(() => handleSave(), 100);
-  };
-
-  const handleUpdate = () => {
-    if (!editing) return;
-    setPlansList(plansList.map((p) => (p.name === editing.name ? form : p)));
-    setEditing(null);
-    setForm(emptyPlan);
-    setTimeout(() => handleSave(), 100);
+    setTimeout(() => setSaved(false), 2500);
   };
 
   const handleDelete = (name: string) => {
-    if (confirm("Delete this plan?")) {
-      setPlansList(plansList.filter((p) => p.name !== name));
-      setTimeout(() => handleSave(), 100);
-    }
+    if (!confirm(`Delete "${name}" plan? This cannot be undone.`)) return;
+    const updated = plans.filter((p) => p.name !== name);
+    setPlans(updated);
+    savePlans(updated);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2500);
   };
 
-  const addFeature = () => {
-    if (featureInput.trim()) {
-      setForm({ ...form, features: [...form.features, featureInput.trim()] });
-      setFeatureInput("");
-    }
-  };
-
-  const removeFeature = (index: number) => {
-    setForm({ ...form, features: form.features.filter((_, i) => i !== index) });
-  };
-
-  const startEdit = (plan: Plan) => {
-    setEditing(plan);
-    setForm({ ...plan });
-    setIsAdding(false);
+  const addFeature = () => setFormData({ ...formData, features: [...formData.features, ""] });
+  const removeFeature = (i: number) => setFormData({ ...formData, features: formData.features.filter((_, idx) => idx !== i) });
+  const updateFeature = (i: number, val: string) => {
+    const f = [...formData.features];
+    f[i] = val;
+    setFormData({ ...formData, features: f });
   };
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-xl font-bold text-gray-900">Membership Plans</h2>
-          <p className="text-gray-500 text-sm">Manage your gym membership plans and pricing</p>
+          <p className="text-sm text-gray-500 mt-1">{plans.length} plans configured</p>
         </div>
-        <button onClick={() => { setIsAdding(true); setEditing(null); setForm(emptyPlan); }} className="flex items-center gap-2 bg-teal-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-teal-700 transition-colors text-sm">
+        <button
+          onClick={openAdd}
+          className="bg-teal-600 text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-teal-700 transition-colors flex items-center justify-center gap-2 shadow-md"
+        >
           <Plus className="h-4 w-4" /> Add Plan
         </button>
       </div>
 
+      {/* Success Toast */}
       {saved && (
-        <div className="bg-green-50 text-green-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-2">
+        <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl flex items-center gap-2 text-sm animate-fade-in">
           <Check className="h-4 w-4" /> Changes saved successfully!
         </div>
       )}
 
-      {/* Form Modal */}
-      {(isAdding || editing) && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/50" onClick={() => { setIsAdding(false); setEditing(null); }} />
-          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between p-5 border-b">
-              <h3 className="text-lg font-bold">{editing ? "Edit Plan" : "Add New Plan"}</h3>
-              <button onClick={() => { setIsAdding(false); setEditing(null); }} className="p-1 hover:bg-gray-100 rounded-lg"><X className="h-5 w-5" /></button>
+      {/* Plans - Cards on mobile, Table on desktop */}
+      <div className="hidden sm:block bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-gray-100 bg-gray-50">
+                <th className="text-left px-5 py-3 font-semibold text-gray-600">Plan</th>
+                <th className="text-left px-5 py-3 font-semibold text-gray-600">Price</th>
+                <th className="text-left px-5 py-3 font-semibold text-gray-600">Features</th>
+                <th className="text-left px-5 py-3 font-semibold text-gray-600">Popular</th>
+                <th className="text-right px-5 py-3 font-semibold text-gray-600">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {plans.map((plan) => (
+                <tr key={plan.name} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                  <td className="px-5 py-4">
+                    <div className="font-semibold text-gray-900">{plan.name}</div>
+                    <div className="text-xs text-gray-500 mt-0.5 max-w-xs truncate">{plan.description}</div>
+                  </td>
+                  <td className="px-5 py-4">
+                    <span className="text-gray-900 font-bold">Rs {plan.price.toLocaleString()}</span>
+                    <span className="text-gray-400 text-xs ml-1">{plan.period}</span>
+                  </td>
+                  <td className="px-5 py-4 text-gray-500">{plan.features.length} features</td>
+                  <td className="px-5 py-4">
+                    {plan.popular && (
+                      <span className="inline-flex items-center gap-1 bg-yellow-100 text-yellow-700 px-2.5 py-1 rounded-full text-xs font-semibold">
+                        <Star className="h-3 w-3 fill-current" /> Popular
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-5 py-4">
+                    <div className="flex items-center justify-end gap-2">
+                      <button onClick={() => openEdit(plan)} className="p-2 rounded-lg hover:bg-blue-50 text-blue-600 transition-colors" title="Edit">
+                        <Edit className="h-4 w-4" />
+                      </button>
+                      <button onClick={() => handleDelete(plan.name)} className="p-2 rounded-lg hover:bg-red-50 text-red-500 transition-colors" title="Delete">
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Mobile Cards */}
+      <div className="sm:hidden space-y-3">
+        {plans.map((plan) => (
+          <div key={plan.name} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+            <div className="flex items-start justify-between mb-2">
+              <div>
+                <div className="font-bold text-gray-900 flex items-center gap-2">
+                  {plan.name}
+                  {plan.popular && (
+                    <span className="inline-flex items-center gap-0.5 bg-yellow-100 text-yellow-700 px-1.5 py-0.5 rounded-full text-[10px] font-semibold">
+                      <Star className="h-2.5 w-2.5 fill-current" /> Popular
+                    </span>
+                  )}
+                </div>
+                <div className="text-xs text-gray-500 mt-0.5">{plan.description}</div>
+              </div>
+              <div className="text-right">
+                <div className="font-bold text-gray-900">Rs {plan.price.toLocaleString()}</div>
+                <div className="text-xs text-gray-400">{plan.period}</div>
+              </div>
+            </div>
+            <div className="text-xs text-gray-500 mb-3">{plan.features.length} features included</div>
+            <div className="flex items-center gap-2">
+              <button onClick={() => openEdit(plan)} className="flex-1 py-2 rounded-lg bg-blue-50 text-blue-600 text-sm font-medium hover:bg-blue-100 transition-colors flex items-center justify-center gap-1.5">
+                <Edit className="h-3.5 w-3.5" /> Edit
+              </button>
+              <button onClick={() => handleDelete(plan.name)} className="flex-1 py-2 rounded-lg bg-red-50 text-red-500 text-sm font-medium hover:bg-red-100 transition-colors flex items-center justify-center gap-1.5">
+                <Trash2 className="h-3.5 w-3.5" /> Delete
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Modal */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-fade-in" onClick={() => setShowModal(false)} />
+          <div className="relative bg-white sm:rounded-2xl shadow-2xl w-full sm:max-w-lg sm:mx-4 max-h-[90vh] overflow-y-auto animate-slide-up">
+            <div className="sticky top-0 bg-white z-10 flex items-center justify-between px-5 py-4 border-b border-gray-100">
+              <h3 className="text-lg font-bold text-gray-900">{editing ? "Edit Plan" : "Add New Plan"}</h3>
+              <button onClick={() => setShowModal(false)} className="p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                <X className="h-5 w-5 text-gray-500" />
+              </button>
             </div>
             <div className="p-5 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Plan Name</label>
-                  <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-teal-500 outline-none text-sm" placeholder="e.g. Basic" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Price (Rs)</label>
-                  <input value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-teal-500 outline-none text-sm" placeholder="e.g. 999" />
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Plan Name *</label>
+                <input type="text" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none text-sm" placeholder="e.g. Basic, Premium" required />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Period</label>
-                  <select value={form.period} onChange={(e) => setForm({ ...form, period: e.target.value })} className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-teal-500 outline-none text-sm">
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Price (Rs) *</label>
+                  <input type="number" value={formData.price} onChange={(e) => setFormData({ ...formData, price: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none text-sm" placeholder="999" required />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Period</label>
+                  <select value={formData.period} onChange={(e) => setFormData({ ...formData, period: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none text-sm appearance-none bg-white">
                     <option value="/month">/month</option>
                     <option value="/year">/year</option>
                   </select>
                 </div>
-                <div className="flex items-end">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" checked={form.popular} onChange={(e) => setForm({ ...form, popular: e.target.checked })} className="w-4 h-4 text-teal-600 rounded" />
-                    <span className="text-sm font-medium text-gray-700">Most Popular</span>
-                  </label>
-                </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                <input value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-teal-500 outline-none text-sm" placeholder="Brief description" />
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Description</label>
+                <textarea value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} rows={2} className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none text-sm resize-none" placeholder="Short description of this plan" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Features</label>
-                <div className="flex gap-2 mb-2">
-                  <input value={featureInput} onChange={(e) => setFeatureInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addFeature())} className="flex-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-teal-500 outline-none text-sm" placeholder="Add feature" />
-                  <button type="button" onClick={addFeature} className="px-3 py-2 bg-gray-100 rounded-lg text-sm hover:bg-gray-200">Add</button>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" checked={formData.popular} onChange={(e) => setFormData({ ...formData, popular: e.target.checked })} className="w-4 h-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500" />
+                  <span className="text-sm font-medium text-gray-700">Mark as Most Popular</span>
+                </label>
+              </div>
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-sm font-medium text-gray-700">Features</label>
+                  <button type="button" onClick={addFeature} className="text-teal-600 text-sm font-medium hover:text-teal-700">+ Add</button>
                 </div>
-                <div className="space-y-1">
-                  {form.features.map((f, i) => (
-                    <div key={i} className="flex items-center gap-2 text-sm bg-gray-50 px-3 py-1.5 rounded-lg">
-                      <Check className="h-3 w-3 text-teal-600" />
-                      <span className="flex-1">{f}</span>
-                      <button type="button" onClick={() => removeFeature(i)} className="text-red-400 hover:text-red-600"><Trash2 className="h-3 w-3" /></button>
+                <div className="space-y-2">
+                  {formData.features.map((feature, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <input type="text" value={feature} onChange={(e) => updateFeature(i, e.target.value)} className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none text-sm" placeholder={`Feature ${i + 1}`} />
+                      {formData.features.length > 1 && (
+                        <button type="button" onClick={() => removeFeature(i)} className="p-2 rounded-lg hover:bg-red-50 text-red-400 hover:text-red-500 transition-colors flex-shrink-0">
+                          <X className="h-4 w-4" />
+                        </button>
+                      )}
                     </div>
                   ))}
                 </div>
               </div>
             </div>
-            <div className="flex gap-3 p-5 border-t">
-              <button onClick={() => { setIsAdding(false); setEditing(null); }} className="flex-1 px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium hover:bg-gray-50">Cancel</button>
-              <button onClick={editing ? handleUpdate : handleAdd} className="flex-1 px-4 py-2 bg-teal-600 text-white rounded-lg text-sm font-medium hover:bg-teal-700">{editing ? "Update" : "Add"} Plan</button>
+            <div className="sticky bottom-0 bg-white border-t border-gray-100 px-5 py-4 flex gap-3 safe-bottom">
+              <button onClick={() => setShowModal(false)} className="flex-1 py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold text-sm hover:bg-gray-50 transition-colors">
+                Cancel
+              </button>
+              <button onClick={handleSave} className="flex-1 py-3 rounded-xl bg-teal-600 text-white font-semibold text-sm hover:bg-teal-700 transition-colors shadow-md">
+                {editing ? "Save Changes" : "Add Plan"}
+              </button>
             </div>
           </div>
         </div>
       )}
-
-      {/* Plans Table */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-gray-50 border-b">
-            <tr>
-              <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Plan</th>
-              <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Price</th>
-              <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Features</th>
-              <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Popular</th>
-              <th className="text-right px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y">
-            {plansList.map((plan) => (
-              <tr key={plan.name} className="hover:bg-gray-50">
-                <td className="px-5 py-4">
-                  <div className="font-semibold text-gray-900">{plan.name}</div>
-                  <div className="text-sm text-gray-500">{plan.description}</div>
-                </td>
-                <td className="px-5 py-4 text-sm font-medium text-gray-900">Rs {plan.price}{plan.period}</td>
-                <td className="px-5 py-4 text-sm text-gray-500">{plan.features.length} features</td>
-                <td className="px-5 py-4">
-                  {plan.popular ? <span className="px-2 py-1 bg-teal-100 text-teal-700 text-xs rounded-full font-medium">Popular</span> : <span className="text-gray-400 text-sm">-</span>}
-                </td>
-                <td className="px-5 py-4 text-right">
-                  <div className="flex items-center justify-end gap-2">
-                    <button onClick={() => startEdit(plan)} className="p-2 hover:bg-gray-100 rounded-lg text-gray-500 hover:text-teal-600"><Pencil className="h-4 w-4" /></button>
-                    <button onClick={() => handleDelete(plan.name)} className="p-2 hover:bg-red-50 rounded-lg text-gray-500 hover:text-red-600"><Trash2 className="h-4 w-4" /></button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
     </div>
   );
 }
