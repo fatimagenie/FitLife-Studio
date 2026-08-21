@@ -2,52 +2,93 @@
 
 import { useState, useEffect } from "react";
 import { Plus, Trash2, X, Check, Image as ImageIcon } from "lucide-react";
-import { galleryImages as defaultGallery } from "@/data/gallery";
-import { getGallery, saveGallery } from "@/lib/services/storage";
+import { getGallery, saveGalleryItem, deleteGalleryItem } from "@/lib/services/storage";
 import { GalleryItem } from "@/types";
 
 const galleryCategories = ["transformations", "gym", "classes", "events"];
 
 export default function AdminGallery() {
-  const [gallery, setGallery] = useState<GalleryItem[]>(defaultGallery);
+  const [gallery, setGallery] = useState<GalleryItem[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [activeCategory, setActiveCategory] = useState("all");
   const [formData, setFormData] = useState({ src: "", alt: "", category: "gym" });
 
   useEffect(() => {
-    setGallery(getGallery(defaultGallery));
+    getGallery().then(setGallery).finally(() => setLoading(false));
   }, []);
 
   const filtered = activeCategory === "all" ? gallery : gallery.filter((g) => g.category === activeCategory);
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     if (!formData.src.trim() || !formData.alt.trim()) return;
-    const newItem: GalleryItem = {
-      id: Date.now().toString(),
-      src: formData.src.trim(),
-      alt: formData.alt.trim(),
-      category: formData.category as GalleryItem["category"],
-    };
-    const updated = [...gallery, newItem];
-    setGallery(updated);
-    saveGallery(updated);
-    setShowModal(false);
-    setFormData({ src: "", alt: "", category: "gym" });
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
+    setSaving(true);
+    try {
+      const itemData = {
+        src: formData.src.trim(),
+        alt: formData.alt.trim(),
+        category: formData.category as GalleryItem["category"],
+      };
+      const newId = await saveGalleryItem(itemData);
+      setGallery((prev) => [...prev, { id: newId, ...itemData }]);
+      setShowModal(false);
+      setFormData({ src: "", alt: "", category: "gym" });
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+    } catch (err) {
+      console.error("Failed to save gallery item:", err);
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (item: GalleryItem) => {
     if (!confirm("Delete this image? This cannot be undone.")) return;
-    const updated = gallery.filter((g) => g.id !== id);
-    setGallery(updated);
-    saveGallery(updated);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
+    try {
+      if (item.id) {
+        await deleteGalleryItem(item.id);
+      }
+      setGallery((prev) => prev.filter((g) => g !== item));
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+    } catch (err) {
+      console.error("Failed to delete gallery item:", err);
+    }
   };
 
   const categoryLabel = (cat: string) => cat.charAt(0).toUpperCase() + cat.slice(1);
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div>
+            <div className="h-7 bg-gray-200 rounded w-28 animate-pulse" />
+            <div className="h-4 bg-gray-200 rounded w-20 mt-2 animate-pulse" />
+          </div>
+          <div className="h-10 bg-gray-200 rounded-xl w-28 animate-pulse" />
+        </div>
+        <div className="flex gap-2 animate-pulse">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="h-9 bg-gray-200 rounded-full w-24" />
+          ))}
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden animate-pulse">
+              <div className="aspect-[4/3] bg-gray-200" />
+              <div className="p-3 space-y-2">
+                <div className="h-4 bg-gray-200 rounded w-24" />
+                <div className="h-3 bg-gray-200 rounded w-16" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -86,7 +127,7 @@ export default function AdminGallery() {
             <div className="aspect-[4/3] relative overflow-hidden bg-gray-100">
               <img src={item.src} alt={item.alt} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
-                <button onClick={() => handleDelete(item.id)} className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center text-white hover:bg-red-600 transition-colors shadow-lg">
+                <button onClick={() => handleDelete(item)} className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center text-white hover:bg-red-600 transition-colors shadow-lg">
                   <Trash2 className="h-4 w-4" />
                 </button>
               </div>
@@ -133,7 +174,7 @@ export default function AdminGallery() {
             </div>
             <div className="border-t border-gray-100 px-5 py-4 flex gap-3 safe-bottom">
               <button onClick={() => setShowModal(false)} className="flex-1 py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold text-sm hover:bg-gray-50 transition-colors">Cancel</button>
-              <button onClick={handleAdd} className="flex-1 py-3 rounded-xl bg-teal-600 text-white font-semibold text-sm hover:bg-teal-700 transition-colors shadow-md">Add Image</button>
+              <button onClick={handleAdd} disabled={saving} className="flex-1 py-3 rounded-xl bg-teal-600 text-white font-semibold text-sm hover:bg-teal-700 transition-colors shadow-md disabled:opacity-50">{saving ? "Adding..." : "Add Image"}</button>
             </div>
           </div>
         </div>

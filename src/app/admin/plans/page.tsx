@@ -2,15 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, X, Star, Check } from "lucide-react";
-import { plans as defaultPlans } from "@/data/plans";
-import { getPlans, savePlans } from "@/lib/services/storage";
+import { getPlans, savePlan, updatePlan, deletePlan } from "@/lib/services/storage";
 import { Plan } from "@/types";
 
 export default function AdminPlans() {
-  const [plans, setPlans] = useState<Plan[]>(defaultPlans);
+  const [plans, setPlans] = useState<Plan[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState<Plan | null>(null);
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     price: "",
@@ -21,7 +22,7 @@ export default function AdminPlans() {
   });
 
   useEffect(() => {
-    setPlans(getPlans(defaultPlans));
+    getPlans().then(setPlans).finally(() => setLoading(false));
   }, []);
 
   const openAdd = () => {
@@ -43,37 +44,50 @@ export default function AdminPlans() {
     setShowModal(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!formData.name.trim() || !formData.price.trim()) return;
-    const planData: Plan = {
-      name: formData.name.trim(),
-      price: formData.price || "0",
-      period: formData.period,
-      popular: formData.popular,
-      description: formData.description.trim(),
-      features: formData.features.filter((f) => f.trim()),
-    };
+    setSaving(true);
+    try {
+      const planData = {
+        name: formData.name.trim(),
+        price: formData.price || "0",
+        period: formData.period,
+        popular: formData.popular,
+        description: formData.description.trim(),
+        features: formData.features.filter((f) => f.trim()),
+      };
 
-    let updated: Plan[];
-    if (editing) {
-      updated = plans.map((p) => (p.name === editing.name ? planData : p));
-    } else {
-      updated = [...plans, planData];
+      if (editing) {
+        if (editing.id) {
+          await updatePlan(editing.id, planData);
+        }
+        setPlans((prev) => prev.map((p) => (p.id === editing.id ? { ...p, ...planData } : p)));
+      } else {
+        const newId = await savePlan(planData);
+        setPlans((prev) => [...prev, { id: newId, ...planData }]);
+      }
+      setShowModal(false);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+    } catch (err) {
+      console.error("Failed to save plan:", err);
+    } finally {
+      setSaving(false);
     }
-    setPlans(updated);
-    savePlans(updated);
-    setShowModal(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
   };
 
-  const handleDelete = (name: string) => {
-    if (!confirm(`Delete "${name}" plan? This cannot be undone.`)) return;
-    const updated = plans.filter((p) => p.name !== name);
-    setPlans(updated);
-    savePlans(updated);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
+  const handleDelete = async (plan: Plan) => {
+    if (!confirm(`Delete "${plan.name}" plan? This cannot be undone.`)) return;
+    try {
+      if (plan.id) {
+        await deletePlan(plan.id);
+      }
+      setPlans((prev) => prev.filter((p) => p !== plan));
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+    } catch (err) {
+      console.error("Failed to delete plan:", err);
+    }
   };
 
   const addFeature = () => setFormData({ ...formData, features: [...formData.features, ""] });
@@ -83,6 +97,31 @@ export default function AdminPlans() {
     f[i] = val;
     setFormData({ ...formData, features: f });
   };
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div>
+            <div className="h-7 bg-gray-200 rounded w-40 animate-pulse" />
+            <div className="h-4 bg-gray-200 rounded w-28 mt-2 animate-pulse" />
+          </div>
+          <div className="h-10 bg-gray-200 rounded-xl w-28 animate-pulse" />
+        </div>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="p-5 space-y-4">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="flex gap-4 animate-pulse">
+                <div className="h-4 bg-gray-200 rounded flex-1" />
+                <div className="h-4 bg-gray-200 rounded w-20" />
+                <div className="h-4 bg-gray-200 rounded w-16" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -122,7 +161,7 @@ export default function AdminPlans() {
             </thead>
             <tbody>
               {plans.map((plan) => (
-                <tr key={plan.name} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                <tr key={plan.id || plan.name} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
                   <td className="px-5 py-4">
                     <div className="font-semibold text-gray-900">{plan.name}</div>
                     <div className="text-xs text-gray-500 mt-0.5 max-w-xs truncate">{plan.description}</div>
@@ -144,7 +183,7 @@ export default function AdminPlans() {
                       <button onClick={() => openEdit(plan)} className="p-2 rounded-lg hover:bg-blue-50 text-blue-600 transition-colors" title="Edit">
                         <Edit className="h-4 w-4" />
                       </button>
-                      <button onClick={() => handleDelete(plan.name)} className="p-2 rounded-lg hover:bg-red-50 text-red-500 transition-colors" title="Delete">
+                      <button onClick={() => handleDelete(plan)} className="p-2 rounded-lg hover:bg-red-50 text-red-500 transition-colors" title="Delete">
                         <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
@@ -159,7 +198,7 @@ export default function AdminPlans() {
       {/* Mobile Cards */}
       <div className="sm:hidden space-y-3">
         {plans.map((plan) => (
-          <div key={plan.name} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+          <div key={plan.id || plan.name} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
             <div className="flex items-start justify-between mb-2">
               <div>
                 <div className="font-bold text-gray-900 flex items-center gap-2">
@@ -182,7 +221,7 @@ export default function AdminPlans() {
               <button onClick={() => openEdit(plan)} className="flex-1 py-2 rounded-lg bg-blue-50 text-blue-600 text-sm font-medium hover:bg-blue-100 transition-colors flex items-center justify-center gap-1.5">
                 <Edit className="h-3.5 w-3.5" /> Edit
               </button>
-              <button onClick={() => handleDelete(plan.name)} className="flex-1 py-2 rounded-lg bg-red-50 text-red-500 text-sm font-medium hover:bg-red-100 transition-colors flex items-center justify-center gap-1.5">
+              <button onClick={() => handleDelete(plan)} className="flex-1 py-2 rounded-lg bg-red-50 text-red-500 text-sm font-medium hover:bg-red-100 transition-colors flex items-center justify-center gap-1.5">
                 <Trash2 className="h-3.5 w-3.5" /> Delete
               </button>
             </div>
@@ -252,8 +291,8 @@ export default function AdminPlans() {
               <button onClick={() => setShowModal(false)} className="flex-1 py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold text-sm hover:bg-gray-50 transition-colors">
                 Cancel
               </button>
-              <button onClick={handleSave} className="flex-1 py-3 rounded-xl bg-teal-600 text-white font-semibold text-sm hover:bg-teal-700 transition-colors shadow-md">
-                {editing ? "Save Changes" : "Add Plan"}
+              <button onClick={handleSave} disabled={saving} className="flex-1 py-3 rounded-xl bg-teal-600 text-white font-semibold text-sm hover:bg-teal-700 transition-colors shadow-md disabled:opacity-50">
+                {saving ? "Saving..." : editing ? "Save Changes" : "Add Plan"}
               </button>
             </div>
           </div>

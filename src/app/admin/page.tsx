@@ -11,9 +11,6 @@ import {
   TrendingUp,
   Clock,
 } from "lucide-react";
-import { plans as defaultPlans } from "@/data/plans";
-import { trainers as defaultTrainers } from "@/data/trainers";
-import { classes as defaultClasses } from "@/data/classes";
 import { getPlans, getTrainers, getClasses, getBookings, getMessages } from "@/lib/services/storage";
 import { useEffect, useState } from "react";
 
@@ -69,19 +66,63 @@ const quickActions = [
 
 export default function AdminDashboard() {
   const [counts, setCounts] = useState({ plans: 0, trainers: 0, classes: 0, bookings: 0, messages: 0, unread: 0 });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setCounts({
-      plans: getPlans(defaultPlans).length,
-      trainers: getTrainers(defaultTrainers).length,
-      classes: getClasses(defaultClasses).length,
-      bookings: getBookings().length,
-      messages: getMessages().length,
-      unread: getMessages().filter((m) => !m.read).length,
-    });
+    async function load() {
+      try {
+        const [plans, trainers, classes, bookings, messages] = await Promise.all([
+          getPlans(),
+          getTrainers(),
+          getClasses(),
+          getBookings(),
+          getMessages(),
+        ]);
+        setCounts({
+          plans: plans.length,
+          trainers: trainers.length,
+          classes: classes.length,
+          bookings: bookings.length,
+          messages: messages.length,
+          unread: messages.filter((m) => !m.read).length,
+        });
+      } catch (err) {
+        console.error("Failed to load dashboard data:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
   }, []);
 
   const countValues = [counts.plans, counts.trainers, counts.classes, counts.bookings, counts.messages];
+
+  if (loading) {
+    return (
+      <div className="space-y-6 sm:space-y-8">
+        <div className="bg-gradient-to-r from-teal-600 to-teal-700 rounded-2xl p-6 sm:p-8 animate-pulse">
+          <div className="h-10 w-10 bg-white/20 rounded-full" />
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-gray-100 animate-pulse">
+              <div className="w-10 h-10 bg-gray-200 rounded-xl mb-3" />
+              <div className="h-8 bg-gray-200 rounded w-12 mb-1" />
+              <div className="h-4 bg-gray-200 rounded w-20" />
+            </div>
+          ))}
+        </div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-gray-100 animate-pulse">
+              <div className="w-10 h-10 bg-gray-200 rounded-xl mb-3" />
+              <div className="h-4 bg-gray-200 rounded w-24" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 sm:space-y-8">
@@ -150,7 +191,7 @@ export default function AdminDashboard() {
         <div className="grid sm:grid-cols-2 gap-4 text-sm">
           <div className="flex items-center justify-between py-2 border-b border-gray-100">
             <span className="text-gray-500">Data Storage</span>
-            <span className="font-medium text-gray-900">localStorage</span>
+            <span className="font-medium text-gray-900">Firestore</span>
           </div>
           <div className="flex items-center justify-between py-2 border-b border-gray-100">
             <span className="text-gray-500">Unread Messages</span>

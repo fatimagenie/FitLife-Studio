@@ -48,9 +48,9 @@ export default function BookingModal({
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    saveBooking({ ...formData, className, trainer, time, day });
+    await saveBooking({ ...formData, className, trainer, time, day });
     setSubmitted(true);
     setTimeout(() => {
       setSubmitted(false);
@@ -61,15 +61,12 @@ export default function BookingModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
-      {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-fade-in"
         onClick={onClose}
       />
 
-      {/* Modal - full width on mobile, centered on desktop */}
       <div className="relative bg-white sm:rounded-2xl shadow-2xl w-full sm:max-w-md sm:mx-4 overflow-hidden animate-slide-up sm:animate-none sm:scale-100 max-h-[90vh] overflow-y-auto">
-        {/* Header */}
         <div className="bg-gradient-to-r from-teal-600 to-teal-700 p-5 sm:p-6 text-white sticky top-0 z-10">
           <button
             onClick={onClose}

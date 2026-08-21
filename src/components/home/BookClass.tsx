@@ -14,7 +14,11 @@ export default function BookClass() {
   const [classList, setClassList] = useState<ClassScheduleType[]>(defaultClasses);
   const [bookingModal, setBookingModal] = useState<{ open: boolean; className?: string; trainer?: string; time?: string; day?: string }>({ open: false });
 
-  useEffect(() => { setClassList(getClasses(defaultClasses)); }, []);
+  useEffect(() => {
+    getClasses().then((data) => {
+      if (data.length > 0) setClassList(data);
+    });
+  }, []);
 
   const featuredClasses = classList.slice(0, 6);
 

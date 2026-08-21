@@ -1,4 +1,5 @@
 export interface Trainer {
+  id?: string;
   name: string;
   role: string;
   specialization: string;
@@ -11,6 +12,7 @@ export interface Trainer {
 }
 
 export interface Plan {
+  id?: string;
   name: string;
   price: string;
   period: string;
@@ -59,6 +61,7 @@ export interface GalleryItem {
 }
 
 export interface FAQ {
+  id?: string;
   question: string;
   answer: string;
   category: string;

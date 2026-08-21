@@ -98,7 +98,7 @@ export default function Contact() {
                     <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center flex-shrink-0"><Mail className="h-6 w-6 text-teal-600" /></div>
                     <div>
                       <h4 className="font-semibold text-gray-900 mb-1">Email</h4>
-                      <p className="text-gray-600 text-sm">info@goldstandardgym.com</p>
+                      <p className="text-gray-600 text-sm">info@fitlifestudio.com</p>
                     </div>
                   </div>
                 </div>

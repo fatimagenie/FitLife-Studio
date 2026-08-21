@@ -2,23 +2,24 @@
 
 import { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, X, Check, Search, HelpCircle } from "lucide-react";
-import { faqs as defaultFAQs } from "@/data/faqs";
-import { getFAQs, saveFAQs } from "@/lib/services/storage";
+import { getFAQs, saveFAQ, updateFAQ, deleteFAQ } from "@/lib/services/storage";
 import { FAQ } from "@/types";
 
 const faqCategories = ["General", "Membership", "Classes", "Facilities"];
 
 export default function AdminFAQs() {
-  const [faqs, setFaqs] = useState<FAQ[]>(defaultFAQs);
+  const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState<FAQ | null>(null);
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
   const [formData, setFormData] = useState({ question: "", answer: "", category: "General" });
 
   useEffect(() => {
-    setFaqs(getFAQs(defaultFAQs));
+    getFAQs().then(setFaqs).finally(() => setLoading(false));
   }, []);
 
   const filtered = faqs.filter((faq) => {
@@ -39,31 +40,75 @@ export default function AdminFAQs() {
     setShowModal(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!formData.question.trim() || !formData.answer.trim()) return;
-    const faqData: FAQ = { question: formData.question.trim(), answer: formData.answer.trim(), category: formData.category };
+    setSaving(true);
+    try {
+      const faqData = { question: formData.question.trim(), answer: formData.answer.trim(), category: formData.category };
 
-    let updated: FAQ[];
-    if (editing) {
-      updated = faqs.map((f) => (f.question === editing.question ? faqData : f));
-    } else {
-      updated = [...faqs, faqData];
+      if (editing) {
+        if (editing.id) {
+          await updateFAQ(editing.id, faqData);
+        }
+        setFaqs((prev) => prev.map((f) => (f.id === editing.id ? { ...f, ...faqData } : f)));
+      } else {
+        const newId = await saveFAQ(faqData);
+        setFaqs((prev) => [...prev, { id: newId, ...faqData }]);
+      }
+      setShowModal(false);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+    } catch (err) {
+      console.error("Failed to save FAQ:", err);
+    } finally {
+      setSaving(false);
     }
-    setFaqs(updated);
-    saveFAQs(updated);
-    setShowModal(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
   };
 
-  const handleDelete = (question: string) => {
+  const handleDelete = async (faq: FAQ) => {
     if (!confirm("Delete this FAQ? This cannot be undone.")) return;
-    const updated = faqs.filter((f) => f.question !== question);
-    setFaqs(updated);
-    saveFAQs(updated);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
+    try {
+      if (faq.id) {
+        await deleteFAQ(faq.id);
+      }
+      setFaqs((prev) => prev.filter((f) => f !== faq));
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+    } catch (err) {
+      console.error("Failed to delete FAQ:", err);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div>
+            <div className="h-7 bg-gray-200 rounded w-20 animate-pulse" />
+            <div className="h-4 bg-gray-200 rounded w-24 mt-2 animate-pulse" />
+          </div>
+          <div className="h-10 bg-gray-200 rounded-xl w-24 animate-pulse" />
+        </div>
+        <div className="h-10 bg-gray-200 rounded-xl w-full animate-pulse" />
+        <div className="flex gap-2 animate-pulse">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="h-9 bg-gray-200 rounded-full w-20" />
+          ))}
+        </div>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="p-5 space-y-4">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="flex gap-4 animate-pulse">
+                <div className="h-4 bg-gray-200 rounded flex-1" />
+                <div className="h-4 bg-gray-200 rounded w-20" />
+                <div className="h-4 bg-gray-200 rounded w-16" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -115,7 +160,7 @@ export default function AdminFAQs() {
             </thead>
             <tbody>
               {filtered.map((faq) => (
-                <tr key={faq.question} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                <tr key={faq.id || faq.question} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
                   <td className="px-5 py-4 font-medium text-gray-900 max-w-xs truncate">{faq.question}</td>
                   <td className="px-5 py-4">
                     <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-teal-50 text-teal-600">{faq.category}</span>
@@ -124,7 +169,7 @@ export default function AdminFAQs() {
                   <td className="px-5 py-4">
                     <div className="flex items-center justify-end gap-2">
                       <button onClick={() => openEdit(faq)} className="p-2 rounded-lg hover:bg-blue-50 text-blue-600 transition-colors"><Edit className="h-4 w-4" /></button>
-                      <button onClick={() => handleDelete(faq.question)} className="p-2 rounded-lg hover:bg-red-50 text-red-500 transition-colors"><Trash2 className="h-4 w-4" /></button>
+                      <button onClick={() => handleDelete(faq)} className="p-2 rounded-lg hover:bg-red-50 text-red-500 transition-colors"><Trash2 className="h-4 w-4" /></button>
                     </div>
                   </td>
                 </tr>
@@ -137,7 +182,7 @@ export default function AdminFAQs() {
       {/* Mobile Cards */}
       <div className="sm:hidden space-y-3">
         {filtered.map((faq) => (
-          <div key={faq.question} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+          <div key={faq.id || faq.question} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
             <div className="flex items-start justify-between mb-2">
               <div className="flex-1 min-w-0">
                 <div className="font-semibold text-gray-900 text-sm">{faq.question}</div>
@@ -149,7 +194,7 @@ export default function AdminFAQs() {
               <button onClick={() => openEdit(faq)} className="flex-1 py-2 rounded-lg bg-blue-50 text-blue-600 text-sm font-medium hover:bg-blue-100 transition-colors flex items-center justify-center gap-1.5">
                 <Edit className="h-3.5 w-3.5" /> Edit
               </button>
-              <button onClick={() => handleDelete(faq.question)} className="flex-1 py-2 rounded-lg bg-red-50 text-red-500 text-sm font-medium hover:bg-red-100 transition-colors flex items-center justify-center gap-1.5">
+              <button onClick={() => handleDelete(faq)} className="flex-1 py-2 rounded-lg bg-red-50 text-red-500 text-sm font-medium hover:bg-red-100 transition-colors flex items-center justify-center gap-1.5">
                 <Trash2 className="h-3.5 w-3.5" /> Delete
               </button>
             </div>
@@ -191,7 +236,7 @@ export default function AdminFAQs() {
             </div>
             <div className="sticky bottom-0 bg-white border-t border-gray-100 px-5 py-4 flex gap-3 safe-bottom">
               <button onClick={() => setShowModal(false)} className="flex-1 py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold text-sm hover:bg-gray-50 transition-colors">Cancel</button>
-              <button onClick={handleSave} className="flex-1 py-3 rounded-xl bg-teal-600 text-white font-semibold text-sm hover:bg-teal-700 transition-colors shadow-md">{editing ? "Save Changes" : "Add FAQ"}</button>
+              <button onClick={handleSave} disabled={saving} className="flex-1 py-3 rounded-xl bg-teal-600 text-white font-semibold text-sm hover:bg-teal-700 transition-colors shadow-md disabled:opacity-50">{saving ? "Saving..." : editing ? "Save Changes" : "Add FAQ"}</button>
             </div>
           </div>
         </div>

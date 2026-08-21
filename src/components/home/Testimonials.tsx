@@ -18,7 +18,7 @@ export default function Testimonials() {
               What Our <span className="text-teal-600">Members Say</span>
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Real stories from real people who transformed their lives at GOLD STANDARD GYM.
+              Real stories from real people who transformed their lives at FITLIFE STUDIO.
             </p>
           </div>
         </ScrollAnimation>

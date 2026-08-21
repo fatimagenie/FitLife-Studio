@@ -18,7 +18,7 @@ import {
   Dumbbell,
   ExternalLink,
 } from "lucide-react";
-import { isAuthenticated, logout } from "@/lib/services/auth";
+import { onAuthChange, logout } from "@/lib/services/auth";
 
 const sidebarLinks = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -62,11 +62,16 @@ export default function AdminLayout({
       setAuthChecked(true);
       return;
     }
-    if (!isAuthenticated()) {
-      router.push("/admin/login");
-    } else {
-      setAuthChecked(true);
-    }
+
+    const unsubscribe = onAuthChange((user) => {
+      if (!user) {
+        router.push("/admin/login");
+      } else {
+        setAuthChecked(true);
+      }
+    });
+
+    return () => unsubscribe();
   }, [pathname, router]);
 
   useEffect(() => {
@@ -97,7 +102,6 @@ export default function AdminLayout({
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Mobile Sidebar Backdrop */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden animate-fade-in"
@@ -105,20 +109,18 @@ export default function AdminLayout({
         />
       )}
 
-      {/* Sidebar */}
       <aside
         className={`fixed top-0 left-0 bottom-0 z-50 w-72 bg-gray-900 text-white flex flex-col transition-transform duration-300 ease-out lg:translate-x-0 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* Sidebar Header */}
         <div className="flex items-center justify-between px-5 py-5 border-b border-gray-800">
           <Link href="/admin" className="flex items-center gap-2.5" onClick={closeSidebar}>
             <div className="w-9 h-9 bg-teal-600 rounded-xl flex items-center justify-center">
               <Dumbbell className="h-5 w-5 text-white" />
             </div>
             <div>
-              <div className="text-sm font-bold tracking-tight">GOLD STANDARD</div>
+              <div className="text-sm font-bold tracking-tight">FITLIFE</div>
               <div className="text-[11px] text-gray-400">Admin Panel</div>
             </div>
           </Link>
@@ -131,7 +133,6 @@ export default function AdminLayout({
           </button>
         </div>
 
-        {/* Nav Links */}
         <nav className="flex-1 py-4 px-3 overflow-y-auto hide-scrollbar">
           <div className="space-y-1">
             {sidebarLinks.map((link) => {
@@ -155,7 +156,6 @@ export default function AdminLayout({
           </div>
         </nav>
 
-        {/* Sidebar Footer */}
         <div className="px-3 py-4 border-t border-gray-800 space-y-2">
           <Link
             href="/"
@@ -167,8 +167,8 @@ export default function AdminLayout({
             View Website
           </Link>
           <button
-            onClick={() => {
-              logout();
+            onClick={async () => {
+              await logout();
               router.push("/admin/login");
             }}
             className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all w-full"
@@ -179,9 +179,7 @@ export default function AdminLayout({
         </div>
       </aside>
 
-      {/* Main Content */}
       <div className="lg:ml-72">
-        {/* Top Header */}
         <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-gray-200 safe-top">
           <div className="flex items-center justify-between h-16 px-4 sm:px-6">
             <div className="flex items-center gap-3">
@@ -215,7 +213,6 @@ export default function AdminLayout({
           </div>
         </header>
 
-        {/* Page Content */}
         <main className="p-4 sm:p-6 lg:p-8">{children}</main>
       </div>
     </div>

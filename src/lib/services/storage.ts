@@ -1,153 +1,144 @@
 import { Plan, Trainer, ClassSchedule, GalleryItem, FAQ } from "@/types";
+import * as fs from "./firestore";
 
-const KEYS = {
-  plans: "gym_plans",
-  trainers: "gym_trainers",
-  classes: "gym_classes",
-  gallery: "gym_gallery",
-  faqs: "gym_faqs",
-  messages: "gym_messages",
-  bookings: "gym_bookings",
-} as const;
+// Re-export Firestore types
+export type { Booking, ContactMessage } from "./firestore";
 
-export interface Booking {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  preferredTime: string;
-  className?: string;
-  trainer?: string;
-  time?: string;
-  day?: string;
-  date: string;
-  status: "confirmed" | "pending" | "cancelled";
-}
-
-export interface ContactMessage {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  subject: string;
-  message: string;
-  date: string;
-  read: boolean;
-}
-
-function getFromStorage<T>(key: string, fallback: T): T {
-  if (typeof window === "undefined") return fallback;
-  const data = localStorage.getItem(key);
-  if (data) {
-    try {
-      return JSON.parse(data);
-    } catch {
-      return fallback;
-    }
+// ===== Plans =====
+export async function getPlans(): Promise<Plan[]> {
+  try {
+    return await fs.getPlans();
+  } catch {
+    return [];
   }
-  return fallback;
 }
 
-function setToStorage<T>(key: string, data: T): void {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(key, JSON.stringify(data));
+export async function savePlan(plan: Omit<Plan, "id">): Promise<string> {
+  return fs.savePlan(plan);
 }
 
-// Plans
-export function getPlans(fallback: Plan[]): Plan[] {
-  return getFromStorage<Plan[]>(KEYS.plans, fallback);
+export async function updatePlan(id: string, data: Partial<Plan>): Promise<void> {
+  return fs.updatePlan(id, data);
 }
 
-export function savePlans(plans: Plan[]): void {
-  setToStorage(KEYS.plans, plans);
+export async function deletePlan(id: string): Promise<void> {
+  return fs.deletePlan(id);
 }
 
-// Trainers
-export function getTrainers(fallback: Trainer[]): Trainer[] {
-  return getFromStorage<Trainer[]>(KEYS.trainers, fallback);
+// ===== Trainers =====
+export async function getTrainers(): Promise<Trainer[]> {
+  try {
+    return await fs.getTrainers();
+  } catch {
+    return [];
+  }
 }
 
-export function saveTrainers(trainers: Trainer[]): void {
-  setToStorage(KEYS.trainers, trainers);
+export async function saveTrainer(trainer: Omit<Trainer, "id">): Promise<string> {
+  return fs.saveTrainer(trainer);
 }
 
-// Classes
-export function getClasses(fallback: ClassSchedule[]): ClassSchedule[] {
-  return getFromStorage<ClassSchedule[]>(KEYS.classes, fallback);
+export async function updateTrainer(id: string, data: Partial<Trainer>): Promise<void> {
+  return fs.updateTrainer(id, data);
 }
 
-export function saveClasses(classes: ClassSchedule[]): void {
-  setToStorage(KEYS.classes, classes);
+export async function deleteTrainer(id: string): Promise<void> {
+  return fs.deleteTrainer(id);
 }
 
-// Gallery
-export function getGallery(fallback: GalleryItem[]): GalleryItem[] {
-  return getFromStorage<GalleryItem[]>(KEYS.gallery, fallback);
+// ===== Classes =====
+export async function getClasses(): Promise<ClassSchedule[]> {
+  try {
+    return await fs.getClasses();
+  } catch {
+    return [];
+  }
 }
 
-export function saveGallery(gallery: GalleryItem[]): void {
-  setToStorage(KEYS.gallery, gallery);
+export async function saveClass(cls: Omit<ClassSchedule, "id">): Promise<string> {
+  return fs.saveClass(cls);
 }
 
-// FAQs
-export function getFAQs(fallback: FAQ[]): FAQ[] {
-  return getFromStorage<FAQ[]>(KEYS.faqs, fallback);
+export async function updateClass(id: string, data: Partial<ClassSchedule>): Promise<void> {
+  return fs.updateClass(id, data);
 }
 
-export function saveFAQs(faqs: FAQ[]): void {
-  setToStorage(KEYS.faqs, faqs);
+export async function deleteClass(id: string): Promise<void> {
+  return fs.deleteClass(id);
 }
 
-// Messages
-export function getMessages(): ContactMessage[] {
-  return getFromStorage<ContactMessage[]>(KEYS.messages, []);
+// ===== Gallery =====
+export async function getGallery(): Promise<GalleryItem[]> {
+  try {
+    return await fs.getGallery();
+  } catch {
+    return [];
+  }
 }
 
-export function saveMessage(msg: Omit<ContactMessage, "id" | "date" | "read">): void {
-  const messages = getMessages();
-  const newMsg: ContactMessage = {
-    ...msg,
-    id: Date.now().toString(),
-    date: new Date().toISOString(),
-    read: false,
-  };
-  setToStorage(KEYS.messages, [newMsg, ...messages]);
+export async function saveGalleryItem(item: Omit<GalleryItem, "id">): Promise<string> {
+  return fs.saveGalleryItem(item);
 }
 
-export function markMessageRead(id: string): void {
-  const messages = getMessages();
-  const updated = messages.map((m) => (m.id === id ? { ...m, read: true } : m));
-  setToStorage(KEYS.messages, updated);
+export async function updateGalleryItem(id: string, data: Partial<GalleryItem>): Promise<void> {
+  return fs.updateGalleryItem(id, data);
 }
 
-export function deleteMessage(id: string): void {
-  const messages = getMessages().filter((m) => m.id !== id);
-  setToStorage(KEYS.messages, messages);
+export async function deleteGalleryItem(id: string): Promise<void> {
+  return fs.deleteGalleryItem(id);
 }
 
-// Bookings
-export function getBookings(): Booking[] {
-  return getFromStorage<Booking[]>(KEYS.bookings, []);
+// ===== FAQs =====
+export async function getFAQs(): Promise<FAQ[]> {
+  try {
+    return await fs.getFAQs();
+  } catch {
+    return [];
+  }
 }
 
-export function saveBooking(booking: Omit<Booking, "id" | "date" | "status">): void {
-  const bookings = getBookings();
-  const newBooking: Booking = {
-    ...booking,
-    id: Date.now().toString(),
-    date: new Date().toISOString(),
-    status: "confirmed",
-  };
-  setToStorage(KEYS.bookings, [newBooking, ...bookings]);
+export async function saveFAQ(faq: Omit<FAQ, "id">): Promise<string> {
+  return fs.saveFAQ(faq);
 }
 
-export function updateBookingStatus(id: string, status: Booking["status"]): void {
-  const bookings = getBookings();
-  const updated = bookings.map((b) => (b.id === id ? { ...b, status } : b));
-  setToStorage(KEYS.bookings, updated);
+export async function updateFAQ(id: string, data: Partial<FAQ>): Promise<void> {
+  return fs.updateFAQ(id, data);
 }
 
-export function deleteBooking(id: string): void {
-  const bookings = getBookings().filter((b) => b.id !== id);
-  setToStorage(KEYS.bookings, bookings);
+export async function deleteFAQ(id: string): Promise<void> {
+  return fs.deleteFAQ(id);
+}
+
+// ===== Messages =====
+export async function getMessages() {
+  return fs.getMessages();
+}
+
+export async function saveMessage(msg: Parameters<typeof fs.saveMessage>[0]): Promise<string> {
+  return fs.saveMessage(msg);
+}
+
+export async function markMessageRead(id: string): Promise<void> {
+  return fs.markMessageRead(id);
+}
+
+export async function deleteMessage(id: string): Promise<void> {
+  return fs.deleteMessage(id);
+}
+
+// ===== Bookings =====
+export async function getBookings() {
+  return fs.getBookings();
+}
+
+export async function saveBooking(booking: Parameters<typeof fs.saveBooking>[0]): Promise<string> {
+  return fs.saveBooking(booking);
+}
+
+export async function updateBookingStatus(id: string, status: "confirmed" | "pending" | "cancelled"): Promise<void> {
+  return fs.updateBookingStatus(id, status);
+}
+
+export async function deleteBooking(id: string): Promise<void> {
+  return fs.deleteBooking(id);
 }

@@ -9,7 +9,11 @@ import { FAQ as FAQType } from "@/types";
 export default function FAQ() {
   const [faqList, setFaqList] = useState<FAQType[]>(defaultFAQs);
 
-  useEffect(() => { setFaqList(getFAQs(defaultFAQs)); }, []);
+  useEffect(() => {
+    getFAQs().then((data) => {
+      if (data.length > 0) setFaqList(data);
+    });
+  }, []);
 
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 

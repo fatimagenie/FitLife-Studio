@@ -26,7 +26,7 @@ export default function ContactPage() {
       <Navbar />
       <PageHero
         title="Contact Us"
-        subtitle="Have questions about GOLD STANDARD GYM? Ready to join? Reach out to us and we'll help you get started."
+        subtitle="Have questions about FITLIFE STUDIO? Ready to join? Reach out to us and we'll help you get started."
         breadcrumbs={[{ label: "Contact", href: "/contact" }]}
       />
 
@@ -110,7 +110,7 @@ export default function ContactPage() {
                       <div className="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center flex-shrink-0"><Mail className="h-5 w-5 text-teal-600" /></div>
                       <div>
                         <h4 className="font-semibold text-gray-900 text-sm">Email</h4>
-                        <p className="text-gray-600 text-sm">info@goldstandardgym.com</p>
+                        <p className="text-gray-600 text-sm">info@fitlifestudio.com</p>
                       </div>
                     </div>
                   </div>

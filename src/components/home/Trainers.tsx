@@ -11,7 +11,11 @@ import ScrollAnimation from "../layout/ScrollAnimation";
 export default function Trainers() {
   const [trainersList, setTrainersList] = useState<Trainer[]>(defaultTrainers);
 
-  useEffect(() => { setTrainersList(getTrainers(defaultTrainers)); }, []);
+  useEffect(() => {
+    getTrainers().then((data) => {
+      if (data.length > 0) setTrainersList(data);
+    });
+  }, []);
 
   return (
     <section id="trainers" className="py-20 bg-white">

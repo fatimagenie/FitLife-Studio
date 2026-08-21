@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, X, Check, Clock, Users } from "lucide-react";
-import { classes as defaultClasses } from "@/data/classes";
-import { getClasses, saveClasses } from "@/lib/services/storage";
+import { getClasses, saveClass, updateClass, deleteClass } from "@/lib/services/storage";
 import { ClassSchedule } from "@/types";
 
 const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
@@ -17,10 +16,12 @@ const categories = [
 ];
 
 export default function AdminSchedule() {
-  const [classes, setClasses] = useState<ClassSchedule[]>(defaultClasses);
+  const [classes, setClasses] = useState<ClassSchedule[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState<ClassSchedule | null>(null);
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [activeDay, setActiveDay] = useState("all");
   const [formData, setFormData] = useState({
     name: "",
@@ -34,7 +35,7 @@ export default function AdminSchedule() {
   });
 
   useEffect(() => {
-    setClasses(getClasses(defaultClasses));
+    getClasses().then(setClasses).finally(() => setLoading(false));
   }, []);
 
   const filtered = activeDay === "all" ? classes : classes.filter((c) => c.day === activeDay);
@@ -62,42 +63,84 @@ export default function AdminSchedule() {
 
   const getCategoryColor = (cat: string) => categories.find((c) => c.name === cat)?.color || "from-gray-500 to-gray-600";
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!formData.name.trim() || !formData.trainer.trim()) return;
-    const classData: ClassSchedule = {
-      id: editing?.id || Date.now().toString(),
-      name: formData.name.trim(),
-      trainer: formData.trainer.trim(),
-      day: formData.day,
-      time: formData.time,
-      duration: formData.duration,
-      category: formData.category,
-      maxSpots: parseInt(formData.maxSpots) || 20,
-      spots: parseInt(formData.spots) || 20,
-      color: getCategoryColor(formData.category),
-    };
+    setSaving(true);
+    try {
+      const classData = {
+        name: formData.name.trim(),
+        trainer: formData.trainer.trim(),
+        day: formData.day,
+        time: formData.time,
+        duration: formData.duration,
+        category: formData.category,
+        maxSpots: parseInt(formData.maxSpots) || 20,
+        spots: parseInt(formData.spots) || 20,
+        color: getCategoryColor(formData.category),
+      };
 
-    let updated: ClassSchedule[];
-    if (editing) {
-      updated = classes.map((c) => (c.id === editing.id ? classData : c));
-    } else {
-      updated = [...classes, classData];
+      if (editing) {
+        if (editing.id) {
+          await updateClass(editing.id, classData);
+        }
+        setClasses((prev) => prev.map((c) => (c.id === editing.id ? { ...c, ...classData } : c)));
+      } else {
+        const newId = await saveClass(classData);
+        setClasses((prev) => [...prev, { id: newId, ...classData }]);
+      }
+      setShowModal(false);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+    } catch (err) {
+      console.error("Failed to save class:", err);
+    } finally {
+      setSaving(false);
     }
-    setClasses(updated);
-    saveClasses(updated);
-    setShowModal(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (cls: ClassSchedule) => {
     if (!confirm("Delete this class? This cannot be undone.")) return;
-    const updated = classes.filter((c) => c.id !== id);
-    setClasses(updated);
-    saveClasses(updated);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
+    try {
+      if (cls.id) {
+        await deleteClass(cls.id);
+      }
+      setClasses((prev) => prev.filter((c) => c !== cls));
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+    } catch (err) {
+      console.error("Failed to delete class:", err);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div>
+            <div className="h-7 bg-gray-200 rounded w-40 animate-pulse" />
+            <div className="h-4 bg-gray-200 rounded w-36 mt-2 animate-pulse" />
+          </div>
+          <div className="h-10 bg-gray-200 rounded-xl w-28 animate-pulse" />
+        </div>
+        <div className="flex gap-2 animate-pulse">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="h-9 bg-gray-200 rounded-full w-20" />
+          ))}
+        </div>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="p-5 space-y-4">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="flex gap-4 animate-pulse">
+                <div className="h-4 bg-gray-200 rounded flex-1" />
+                <div className="h-4 bg-gray-200 rounded w-20" />
+                <div className="h-4 bg-gray-200 rounded w-16" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -171,7 +214,7 @@ export default function AdminSchedule() {
                   <td className="px-5 py-4">
                     <div className="flex items-center justify-end gap-2">
                       <button onClick={() => openEdit(cls)} className="p-2 rounded-lg hover:bg-blue-50 text-blue-600 transition-colors"><Edit className="h-4 w-4" /></button>
-                      <button onClick={() => handleDelete(cls.id)} className="p-2 rounded-lg hover:bg-red-50 text-red-500 transition-colors"><Trash2 className="h-4 w-4" /></button>
+                      <button onClick={() => handleDelete(cls)} className="p-2 rounded-lg hover:bg-red-50 text-red-500 transition-colors"><Trash2 className="h-4 w-4" /></button>
                     </div>
                   </td>
                 </tr>
@@ -201,7 +244,7 @@ export default function AdminSchedule() {
               <button onClick={() => openEdit(cls)} className="flex-1 py-2 rounded-lg bg-blue-50 text-blue-600 text-sm font-medium hover:bg-blue-100 transition-colors flex items-center justify-center gap-1.5">
                 <Edit className="h-3.5 w-3.5" /> Edit
               </button>
-              <button onClick={() => handleDelete(cls.id)} className="flex-1 py-2 rounded-lg bg-red-50 text-red-500 text-sm font-medium hover:bg-red-100 transition-colors flex items-center justify-center gap-1.5">
+              <button onClick={() => handleDelete(cls)} className="flex-1 py-2 rounded-lg bg-red-50 text-red-500 text-sm font-medium hover:bg-red-100 transition-colors flex items-center justify-center gap-1.5">
                 <Trash2 className="h-3.5 w-3.5" /> Delete
               </button>
             </div>
@@ -260,7 +303,7 @@ export default function AdminSchedule() {
             </div>
             <div className="sticky bottom-0 bg-white border-t border-gray-100 px-5 py-4 flex gap-3 safe-bottom">
               <button onClick={() => setShowModal(false)} className="flex-1 py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold text-sm hover:bg-gray-50 transition-colors">Cancel</button>
-              <button onClick={handleSave} className="flex-1 py-3 rounded-xl bg-teal-600 text-white font-semibold text-sm hover:bg-teal-700 transition-colors shadow-md">{editing ? "Save Changes" : "Add Class"}</button>
+              <button onClick={handleSave} disabled={saving} className="flex-1 py-3 rounded-xl bg-teal-600 text-white font-semibold text-sm hover:bg-teal-700 transition-colors shadow-md disabled:opacity-50">{saving ? "Saving..." : editing ? "Save Changes" : "Add Class"}</button>
             </div>
           </div>
         </div>

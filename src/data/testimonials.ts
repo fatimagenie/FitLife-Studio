@@ -5,7 +5,7 @@ export const testimonials: Testimonial[] = [
     name: "Priyanka M.",
     role: "Lost 15kg in 6 months",
     content:
-      "GOLD STANDARD GYM completely transformed my life. The trainers are incredibly supportive, and the community keeps me motivated. I never thought I could enjoy working out!",
+      "FITLIFE STUDIO completely transformed my life. The trainers are incredibly supportive, and the community keeps me motivated. I never thought I could enjoy working out!",
     rating: 5,
     color: "bg-teal-500",
   },
@@ -45,7 +45,7 @@ export const testimonials: Testimonial[] = [
     name: "Arjun P.",
     role: "Lost 22kg in 8 months",
     content:
-      "From 95kg to 73kg - GOLD STANDARD GYM changed my life. The accountability, the nutrition plans, the group energy - everything works together perfectly.",
+      "From 95kg to 73kg - FITLIFE STUDIO changed my life. The accountability, the nutrition plans, the group energy - everything works together perfectly.",
     rating: 5,
     color: "bg-indigo-500",
   },

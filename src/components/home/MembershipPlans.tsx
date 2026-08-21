@@ -11,7 +11,11 @@ import ScrollAnimation from "../layout/ScrollAnimation";
 export default function MembershipPlans() {
   const [plansList, setPlansList] = useState<Plan[]>(defaultPlans);
 
-  useEffect(() => { setPlansList(getPlans(defaultPlans)); }, []);
+  useEffect(() => {
+    getPlans().then((data) => {
+      if (data.length > 0) setPlansList(data);
+    });
+  }, []);
 
   return (
     <section id="plans" className="py-20 bg-gray-50">

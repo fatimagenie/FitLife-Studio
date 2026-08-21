@@ -5,7 +5,7 @@ import { MessageCircle } from "lucide-react";
 export default function WhatsAppButton() {
   const phone = "923169689595";
   const message =
-    "Hi! I'm interested in GOLD STANDARD GYM memberships. Can you share more details?";
+    "Hi! I'm interested in FITLIFE STUDIO memberships. Can you share more details?";
 
   return (
     <a

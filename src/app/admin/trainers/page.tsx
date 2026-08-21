@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, X, Check, Instagram, Twitter, Linkedin } from "lucide-react";
-import { trainers as defaultTrainers } from "@/data/trainers";
-import { getTrainers, saveTrainers } from "@/lib/services/storage";
+import { getTrainers, saveTrainer, updateTrainer, deleteTrainer } from "@/lib/services/storage";
 import { Trainer } from "@/types";
 
 const colorOptions = [
@@ -18,10 +17,12 @@ const colorOptions = [
 ];
 
 export default function AdminTrainers() {
-  const [trainers, setTrainers] = useState<Trainer[]>(defaultTrainers);
+  const [trainers, setTrainers] = useState<Trainer[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState<Trainer | null>(null);
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     role: "",
@@ -33,7 +34,7 @@ export default function AdminTrainers() {
   });
 
   useEffect(() => {
-    setTrainers(getTrainers(defaultTrainers));
+    getTrainers().then(setTrainers).finally(() => setLoading(false));
   }, []);
 
   const openAdd = () => {
@@ -56,39 +57,78 @@ export default function AdminTrainers() {
     setShowModal(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!formData.name.trim() || !formData.role.trim()) return;
-    const trainerData: Trainer = {
-      name: formData.name.trim(),
-      role: formData.role.trim(),
-      specialization: formData.specialization.trim(),
-      experience: formData.experience.trim(),
-      bio: formData.bio.trim(),
-      color: formData.color,
-      social: formData.social,
-    };
+    setSaving(true);
+    try {
+      const trainerData = {
+        name: formData.name.trim(),
+        role: formData.role.trim(),
+        specialization: formData.specialization.trim(),
+        experience: formData.experience.trim(),
+        bio: formData.bio.trim(),
+        color: formData.color,
+        social: formData.social,
+      };
 
-    let updated: Trainer[];
-    if (editing) {
-      updated = trainers.map((t) => (t.name === editing.name ? trainerData : t));
-    } else {
-      updated = [...trainers, trainerData];
+      if (editing) {
+        if (editing.id) {
+          await updateTrainer(editing.id, trainerData);
+        }
+        setTrainers((prev) => prev.map((t) => (t.id === editing.id ? { ...t, ...trainerData } : t)));
+      } else {
+        const newId = await saveTrainer(trainerData);
+        setTrainers((prev) => [...prev, { id: newId, ...trainerData }]);
+      }
+      setShowModal(false);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+    } catch (err) {
+      console.error("Failed to save trainer:", err);
+    } finally {
+      setSaving(false);
     }
-    setTrainers(updated);
-    saveTrainers(updated);
-    setShowModal(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
   };
 
-  const handleDelete = (name: string) => {
-    if (!confirm(`Delete trainer "${name}"? This cannot be undone.`)) return;
-    const updated = trainers.filter((t) => t.name !== name);
-    setTrainers(updated);
-    saveTrainers(updated);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
+  const handleDelete = async (trainer: Trainer) => {
+    if (!confirm(`Delete trainer "${trainer.name}"? This cannot be undone.`)) return;
+    try {
+      if (trainer.id) {
+        await deleteTrainer(trainer.id);
+      }
+      setTrainers((prev) => prev.filter((t) => t !== trainer));
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+    } catch (err) {
+      console.error("Failed to delete trainer:", err);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div>
+            <div className="h-7 bg-gray-200 rounded w-32 animate-pulse" />
+            <div className="h-4 bg-gray-200 rounded w-36 mt-2 animate-pulse" />
+          </div>
+          <div className="h-10 bg-gray-200 rounded-xl w-32 animate-pulse" />
+        </div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden animate-pulse">
+              <div className="h-24 bg-gray-200" />
+              <div className="p-4 space-y-2">
+                <div className="h-5 bg-gray-200 rounded w-24" />
+                <div className="h-4 bg-gray-200 rounded w-20" />
+                <div className="h-3 bg-gray-200 rounded w-32" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -112,7 +152,7 @@ export default function AdminTrainers() {
       {/* Trainer Cards */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
         {trainers.map((trainer) => (
-          <div key={trainer.name} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all">
+          <div key={trainer.id || trainer.name} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all">
             <div className={`h-24 bg-gradient-to-br ${trainer.color} flex items-center justify-center relative`}>
               <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center text-white text-2xl font-bold backdrop-blur-sm">
                 {trainer.name.charAt(0)}
@@ -127,7 +167,7 @@ export default function AdminTrainers() {
                 <button onClick={() => openEdit(trainer)} className="flex-1 py-2 rounded-lg bg-blue-50 text-blue-600 text-sm font-medium hover:bg-blue-100 transition-colors flex items-center justify-center gap-1.5">
                   <Edit className="h-3.5 w-3.5" /> Edit
                 </button>
-                <button onClick={() => handleDelete(trainer.name)} className="flex-1 py-2 rounded-lg bg-red-50 text-red-500 text-sm font-medium hover:bg-red-100 transition-colors flex items-center justify-center gap-1.5">
+                <button onClick={() => handleDelete(trainer)} className="flex-1 py-2 rounded-lg bg-red-50 text-red-500 text-sm font-medium hover:bg-red-100 transition-colors flex items-center justify-center gap-1.5">
                   <Trash2 className="h-3.5 w-3.5" /> Delete
                 </button>
               </div>
@@ -206,8 +246,8 @@ export default function AdminTrainers() {
               <button onClick={() => setShowModal(false)} className="flex-1 py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold text-sm hover:bg-gray-50 transition-colors">
                 Cancel
               </button>
-              <button onClick={handleSave} className="flex-1 py-3 rounded-xl bg-teal-600 text-white font-semibold text-sm hover:bg-teal-700 transition-colors shadow-md">
-                {editing ? "Save Changes" : "Add Trainer"}
+              <button onClick={handleSave} disabled={saving} className="flex-1 py-3 rounded-xl bg-teal-600 text-white font-semibold text-sm hover:bg-teal-700 transition-colors shadow-md disabled:opacity-50">
+                {saving ? "Saving..." : editing ? "Save Changes" : "Add Trainer"}
               </button>
             </div>
           </div>

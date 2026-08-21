@@ -1,38 +1,40 @@
-const AUTH_KEY = "gym_auth";
-const DEFAULT_USERNAME = "admin";
-const DEFAULT_PASSWORD = "goldstandard2026";
+import {
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  User,
+} from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 export interface AuthState {
   isLoggedIn: boolean;
-  username: string;
+  user: User | null;
+  loading: boolean;
 }
 
-export function getAuth(): AuthState {
-  if (typeof window === "undefined") return { isLoggedIn: false, username: "" };
-  const data = localStorage.getItem(AUTH_KEY);
-  if (data) {
-    try {
-      return JSON.parse(data);
-    } catch {
-      return { isLoggedIn: false, username: "" };
-    }
-  }
-  return { isLoggedIn: false, username: "" };
+let authStateCallback: ((user: User | null) => void) | null = null;
+
+export function onAuthChange(callback: (user: User | null) => void): () => void {
+  authStateCallback = callback;
+  const unsubscribe = onAuthStateChanged(auth, (user) => {
+    callback(user);
+  });
+  return unsubscribe;
 }
 
-export function login(username: string, password: string): boolean {
-  if (username === DEFAULT_USERNAME && password === DEFAULT_PASSWORD) {
-    const state: AuthState = { isLoggedIn: true, username };
-    localStorage.setItem(AUTH_KEY, JSON.stringify(state));
+export async function login(email: string, password: string): Promise<boolean> {
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
     return true;
+  } catch {
+    return false;
   }
-  return false;
 }
 
-export function logout(): void {
-  localStorage.removeItem(AUTH_KEY);
+export async function logout(): Promise<void> {
+  await signOut(auth);
 }
 
-export function isAuthenticated(): boolean {
-  return getAuth().isLoggedIn;
+export function getCurrentUser(): User | null {
+  return auth.currentUser;
 }

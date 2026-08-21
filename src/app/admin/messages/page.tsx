@@ -8,34 +8,75 @@ export default function AdminMessages() {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [selected, setSelected] = useState<ContactMessage | null>(null);
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setMessages(getMessages());
+    getMessages().then(setMessages).finally(() => setLoading(false));
   }, []);
 
   const totalUnread = messages.filter((m) => !m.read).length;
 
-  const handleSelect = (msg: ContactMessage) => {
+  const handleSelect = async (msg: ContactMessage) => {
     setSelected(msg);
     if (!msg.read) {
-      markMessageRead(msg.id);
-      setMessages((prev) => prev.map((m) => (m.id === msg.id ? { ...m, read: true } : m)));
+      try {
+        await markMessageRead(msg.id);
+        setMessages((prev) => prev.map((m) => (m.id === msg.id ? { ...m, read: true } : m)));
+        setSelected((prev) => (prev && prev.id === msg.id ? { ...prev, read: true } : prev));
+      } catch (err) {
+        console.error("Failed to mark message as read:", err);
+      }
     }
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (!confirm("Delete this message? This cannot be undone.")) return;
-    deleteMessage(id);
-    setMessages((prev) => prev.filter((m) => m.id !== id));
-    if (selected?.id === id) setSelected(null);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
+    try {
+      await deleteMessage(id);
+      setMessages((prev) => prev.filter((m) => m.id !== id));
+      if (selected?.id === id) setSelected(null);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+    } catch (err) {
+      console.error("Failed to delete message:", err);
+    }
   };
 
   const formatDate = (dateStr: string) => {
     const d = new Date(dateStr);
     return d.toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
   };
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <div className="h-7 bg-gray-200 rounded w-28 animate-pulse" />
+          <div className="h-4 bg-gray-200 rounded w-36 mt-2 animate-pulse" />
+        </div>
+        <div className="grid lg:grid-cols-3 gap-4 sm:gap-6">
+          <div className="lg:col-span-1 bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+            <div className="space-y-3">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="h-4 bg-gray-200 rounded w-24 mb-2" />
+                  <div className="h-3 bg-gray-200 rounded w-32 mb-1" />
+                  <div className="h-3 bg-gray-200 rounded w-20" />
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 p-4 animate-pulse">
+            <div className="space-y-4">
+              <div className="h-6 bg-gray-200 rounded w-40" />
+              <div className="h-4 bg-gray-200 rounded w-64" />
+              <div className="h-20 bg-gray-200 rounded" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

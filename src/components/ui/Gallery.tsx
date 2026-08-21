@@ -9,7 +9,11 @@ import { GalleryItem } from "@/types";
 export default function Gallery() {
   const [galleryList, setGalleryList] = useState<GalleryItem[]>(defaultGallery);
 
-  useEffect(() => { setGalleryList(getGallery(defaultGallery)); }, []);
+  useEffect(() => {
+    getGallery().then((data) => {
+      if (data.length > 0) setGalleryList(data);
+    });
+  }, []);
 
   const [activeCategory, setActiveCategory] = useState("all");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
@@ -35,7 +39,6 @@ export default function Gallery() {
 
   return (
     <div>
-      {/* Category Filters */}
       <div className="flex flex-wrap justify-center gap-3 mb-10">
         {galleryCategories.map((cat) => (
           <button
@@ -52,7 +55,6 @@ export default function Gallery() {
         ))}
       </div>
 
-      {/* Gallery Grid */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {filtered.map((img, index) => (
           <div
@@ -76,7 +78,6 @@ export default function Gallery() {
         ))}
       </div>
 
-      {/* Lightbox */}
       {lightboxIndex !== null && (
         <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4" onClick={closeLightbox}>
           <button

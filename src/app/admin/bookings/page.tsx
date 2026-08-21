@@ -16,26 +16,35 @@ export default function AdminBookings() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [filter, setFilter] = useState<FilterStatus>("all");
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setBookings(getBookings());
+    getBookings().then(setBookings).finally(() => setLoading(false));
   }, []);
 
   const filtered = filter === "all" ? bookings : bookings.filter((b) => b.status === filter);
 
-  const handleStatus = (id: string, status: Booking["status"]) => {
-    updateBookingStatus(id, status);
-    setBookings((prev) => prev.map((b) => (b.id === id ? { ...b, status } : b)));
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
+  const handleStatus = async (id: string, status: Booking["status"]) => {
+    try {
+      await updateBookingStatus(id, status);
+      setBookings((prev) => prev.map((b) => (b.id === id ? { ...b, status } : b)));
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+    } catch (err) {
+      console.error("Failed to update booking status:", err);
+    }
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (!confirm("Delete this booking? This cannot be undone.")) return;
-    deleteBooking(id);
-    setBookings((prev) => prev.filter((b) => b.id !== id));
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
+    try {
+      await deleteBooking(id);
+      setBookings((prev) => prev.filter((b) => b.id !== id));
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+    } catch (err) {
+      console.error("Failed to delete booking:", err);
+    }
   };
 
   const formatDate = (dateStr: string) => {
@@ -49,6 +58,33 @@ export default function AdminBookings() {
     { label: "Pending", value: "pending", count: bookings.filter((b) => b.status === "pending").length },
     { label: "Cancelled", value: "cancelled", count: bookings.filter((b) => b.status === "cancelled").length },
   ];
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <div className="h-7 bg-gray-200 rounded w-28 animate-pulse" />
+          <div className="h-4 bg-gray-200 rounded w-36 mt-2 animate-pulse" />
+        </div>
+        <div className="flex gap-2 animate-pulse">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="h-9 bg-gray-200 rounded-full w-24" />
+          ))}
+        </div>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="p-5 space-y-4">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="flex gap-4 animate-pulse">
+                <div className="h-4 bg-gray-200 rounded flex-1" />
+                <div className="h-4 bg-gray-200 rounded w-20" />
+                <div className="h-4 bg-gray-200 rounded w-16" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

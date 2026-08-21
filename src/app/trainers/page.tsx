@@ -7,7 +7,8 @@ import PageHero from "@/components/layout/PageHero";
 import ScrollAnimation from "@/components/layout/ScrollAnimation";
 import BookingModal from "@/components/ui/BookingModal";
 import { trainers } from "@/data/trainers";
-import { Instagram, Twitter, Linkedin, Award } from "lucide-react";
+import { Instagram, Twitter, Linkedin, Award, ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 export default function TrainersPage() {
   const [selectedSpecialization, setSelectedSpecialization] = useState("all");
@@ -21,7 +22,7 @@ export default function TrainersPage() {
       <Navbar />
       <PageHero
         title="Our Trainers"
-        subtitle="Meet our certified professionals dedicated to helping you reach your fitness goals at GOLD STANDARD GYM."
+        subtitle="Meet our certified professionals dedicated to helping you reach your fitness goals at FITLIFE STUDIO."
         breadcrumbs={[{ label: "Trainers", href: "/trainers" }]}
       />
 
@@ -114,6 +115,24 @@ export default function TrainersPage() {
         onClose={() => setBookingModal({ open: false })}
         trainer={bookingModal.trainer}
       />
+
+      {/* CTA */}
+      <section className="py-20 bg-gradient-to-br from-teal-600 to-teal-800">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <ScrollAnimation>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">Ready to Train with the Best?</h2>
+            <p className="text-teal-100 text-lg mb-8">Book a session with one of our expert trainers and start your transformation today.</p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link href="/plans" className="bg-white text-teal-700 px-8 py-4 rounded-full font-bold text-lg hover:bg-teal-50 transition-all shadow-xl">
+                View Plans
+              </Link>
+              <Link href="/contact" className="border-2 border-white/30 text-white px-8 py-4 rounded-full font-bold text-lg hover:border-white/60 transition-all flex items-center gap-2">
+                Contact Us <ArrowRight className="h-5 w-5" />
+              </Link>
+            </div>
+          </ScrollAnimation>
+        </div>
+      </section>
       <Footer />
     </div>
   );

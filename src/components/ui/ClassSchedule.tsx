@@ -10,7 +10,11 @@ import BookingModal from "./BookingModal";
 export default function ClassSchedule() {
   const [classList, setClassList] = useState<ClassScheduleType[]>(defaultClasses);
 
-  useEffect(() => { setClassList(getClasses(defaultClasses)); }, []);
+  useEffect(() => {
+    getClasses().then((data) => {
+      if (data.length > 0) setClassList(data);
+    });
+  }, []);
 
   const [selectedDay, setSelectedDay] = useState("Monday");
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -24,7 +28,6 @@ export default function ClassSchedule() {
 
   return (
     <div>
-      {/* Day Selector */}
       <div className="flex overflow-x-auto gap-2 mb-6 pb-2">
         {days.map((day) => (
           <button
@@ -41,7 +44,6 @@ export default function ClassSchedule() {
         ))}
       </div>
 
-      {/* Category Filter */}
       <div className="flex items-center gap-2 mb-6 flex-wrap">
         <Filter className="h-4 w-4 text-gray-400" />
         {categories.map((cat) => (
@@ -59,7 +61,6 @@ export default function ClassSchedule() {
         ))}
       </div>
 
-      {/* Schedule Grid */}
       <div className="space-y-4">
         {filtered.length === 0 ? (
           <div className="text-center py-12 text-gray-500">
@@ -72,7 +73,6 @@ export default function ClassSchedule() {
               key={cls.id}
               className="bg-white rounded-xl border border-gray-100 p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4 hover:shadow-lg transition-all overflow-hidden"
             >
-              {/* Color Bar */}
               <div className={`w-1.5 h-16 sm:h-12 rounded-full bg-gradient-to-b ${cls.color} flex-shrink-0 hidden sm:block`} />
 
               <div className="flex-1 min-w-0">

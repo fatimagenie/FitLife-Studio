@@ -35,9 +35,9 @@ export default function Footer() {
   });
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    saveMessage({
+    await saveMessage({
       name: formData.name,
       email: formData.email,
       phone: "",
@@ -53,9 +53,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-gray-900 text-white">
-      {/* Top Section: Map + Opening Hours */}
       <div className="flex flex-col lg:flex-row">
-        {/* Map */}
         <div className="lg:w-1/2 h-[250px] sm:h-[350px] lg:h-[400px]">
           <iframe
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3401.4865223957!2d71.4987!3d34.0069!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38d9173799b02149%3A0x4e3c4b4b4b4b4b4b!2sGulbahar%2C%20Peshawar!5e0!3m2!1sen!2spk!4v1700000000000!5m2!1sen!2spk"
@@ -65,11 +63,10 @@ export default function Footer() {
             allowFullScreen
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
-            title="GOLD STANDARD GYM Location"
+            title="FitLife Studio Location"
           />
         </div>
 
-        {/* Opening Hours */}
         <div className="lg:w-1/2 bg-gray-800 flex items-center justify-center p-6 sm:p-8 lg:p-12">
           <div className="w-full max-w-md">
             <h3 className="text-xl sm:text-2xl font-bold text-green-400 mb-6 sm:mb-8 tracking-wide">
@@ -98,19 +95,17 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Bottom Section: Info + Social + Form */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8 sm:gap-12">
-          {/* Brand & Contact Info */}
           <div>
             <Link href="/" className="flex items-center gap-2 mb-4 sm:mb-5">
               <Dumbbell className="h-7 w-7 sm:h-8 sm:w-8 text-teal-400" />
               <span className="text-xl sm:text-2xl font-bold tracking-tight">
-                GOLD <span className="text-teal-400">STANDARD</span>
+                FIT<span className="text-teal-400">LIFE</span>
               </span>
             </Link>
             <p className="text-gray-400 text-sm mb-5 sm:mb-6 leading-relaxed">
-              At GOLD STANDARD GYM, we are committed to helping you reach your
+              At FitLife Studio, we are committed to helping you reach your
               fitness goals. Our experience runs deep and our trainers know just
               how to get your adrenaline rushing.
             </p>
@@ -132,10 +127,10 @@ export default function Footer() {
               <div className="flex items-center gap-3 text-gray-400 text-sm">
                 <Mail className="h-4 w-4 text-teal-400 flex-shrink-0" />
                 <a
-                  href="mailto:info@goldstandardgym.com"
+                  href="mailto:info@fitlifestudio.com"
                   className="hover:text-teal-400 transition-colors"
                 >
-                  info@goldstandardgym.com
+                  info@fitlifestudio.com
                 </a>
               </div>
               <div className="flex items-center gap-3 text-gray-400 text-sm">
@@ -148,7 +143,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Get Social */}
           <div className="flex flex-col items-start">
             <h4 className="text-lg font-bold text-white mb-5 sm:mb-6">
               Get Social
@@ -172,7 +166,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Contact Form */}
           <div className="sm:col-span-2 md:col-span-1">
             {submitted ? (
               <div className="bg-gray-800 rounded-xl p-6 sm:p-8 text-center h-full flex flex-col items-center justify-center">
