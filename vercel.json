@@ -1,3 +1,0 @@
-{
-  "buildCommand": "rm -rf .vercel/output .next && next build"
-}

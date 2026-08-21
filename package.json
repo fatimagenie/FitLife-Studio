@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "npx rimraf .next",
+    "prebuild": "",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
